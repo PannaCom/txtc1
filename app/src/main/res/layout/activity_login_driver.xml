@@ -1,0 +1,158 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#2d587d">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/back"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_back" />
+
+        <TextView
+            android:text="Đăng nhập"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:id="@+id/textView2" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@mipmap/bg_passenger_infor"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_name"
+                android:paddingTop="10dp"
+                android:layout_marginBottom="5dp">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/new_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="center"
+                    app:hintTextAppearance="@style/TextLabel">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/telephone"
+                        android:focusable="true"
+                        android:singleLine="true"
+                        android:paddingLeft="10dp"
+                        android:inputType="phone"
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:focusableInTouchMode="true"
+                        android:background="@mipmap/img_infor"
+                        android:id="@+id/edt_phone" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/layout_category"
+                android:id="@+id/layout_new_category">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/new_pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="center"
+                    app:hintTextAppearance="@style/TextLabel">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="@string/password"
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:focusable="true"
+                        android:paddingLeft="10dp"
+                        android:focusableInTouchMode="true"
+                        android:background="@mipmap/img_infor"
+                        android:inputType="textPassword"
+                        android:paddingRight="20dp"
+                        android:id="@+id/edt_pass" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/layout_import"
+            android:id="@+id/layout_login"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đăng nhập"
+                android:id="@+id/btn_login"
+                android:paddingRight="20dp"
+                android:textAllCaps="false"
+                android:paddingLeft="20dp"
+                android:background="@drawable/click_confirm"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng ký tài khoản mới"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/txt_register" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/arrow_right"
+                android:id="@+id/imageView" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

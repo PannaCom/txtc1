@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ThueXeToanCau</string>
+    <string name="title_activity_register_driver">RegisterDriverActivity</string>
+    <string-array name="move_array">
+        <item>Thành phố đi sân bay</item>
+        <item>Sân bay về thành phố</item>
+        <item>Khứ hồi</item>
+
+    </string-array>
+    <string name="splash_text">Đang load dữ liệu. Đảm bảo bạn đang kết nối mạng</string>
+    <string name="notice">Thông báo</string>
+    <string name="error_network">Bạn chưa kết nối mạng</string>
+    <string name="try_again">Thử lại</string>
+    <string name="exit">Thoát</string>
+    <string name="register_failure">Đăng ký thất bại</string>
+    <string name="haggle">Đặt giá</string>
+    <string name="text_price_notice">Giá bạn trả phải lớn hơn giá mua ngay</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Hủy</string>
+    <string name="telephone">Số điện thoại</string>
+    <string name="password">Mật khẩu</string>
+</resources>

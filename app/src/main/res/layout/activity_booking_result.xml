@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_booking_result"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="grab.com.thuexetoancau.UI.BookingResultActivity">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#2d587d">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/back"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_back" />
+
+        <TextView
+            android:text="Kết quả"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:id="@+id/textView2" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:background="@mipmap/border_form"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Giá cao nhất"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/txt_max_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:paddingLeft="10dp"
+                android:background="@mipmap/img_infor"
+                android:lines="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Khoảng cách"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txt_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:paddingLeft="10dp"
+                android:background="@mipmap/img_infor"
+                android:lines="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Bảng giá"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/txt_price_basis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:paddingLeft="10dp"
+                android:background="@mipmap/img_infor"
+                android:lines="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:id="@+id/layout_hire_type"
+            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Giá trên một ngày"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:id="@+id/textView5" />
+
+            <TextView
+                android:id="@+id/txt_price_per_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:paddingLeft="10dp"
+                android:background="@mipmap/img_infor"
+                android:lines="1" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
