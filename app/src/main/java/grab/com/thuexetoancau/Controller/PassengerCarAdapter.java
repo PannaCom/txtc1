@@ -50,14 +50,12 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
     private SharePreference preference;
     private String driverPhone, carNumber;
     private int price;
-    private HashMap<TextView,CountDownTimer> counters;
     private onClickListener onClick;
     public PassengerCarAdapter(Context context, ArrayList<BookingObject> vehicle) {
         mContext = context;
         this.mVehicle = vehicle;
         preference = new SharePreference(mContext);
         getDataFromPreference();
-        this.counters = new HashMap<>();
     }
 
     private void getDataFromPreference() {
@@ -91,7 +89,8 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.txtSchedule.setText(mVehicle.get(position).getCarFrom()+" - "+mVehicle.get(position).getCarTo());
+        holder.txtCarFrom.setText(mVehicle.get(position).getCarFrom());
+        holder.txtCarTo.setText(mVehicle.get(position).getCarTo());
         holder.txtHireType.setText(mVehicle.get(position).getCarHireType());
 
         DateTime jDateFrom = new DateTime(mVehicle.get(position).getFromDate());
@@ -105,86 +104,29 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
         else
             holder.txtMaxPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getCurrentPrice())+" Đ");
      //   holder.txtTimeReduce.setText(mVehicle.get(position).getTimeToReduce());
-        DecimalFormat df = new DecimalFormat("#.#");
-        if ((int) mVehicle.get(position).getDistance() == 0)
-            holder.txtDistance.setText(df.format(mVehicle.get(position).getDistance()*1000) + " m");
-        else
-            holder.txtDistance.setText(df.format(mVehicle.get(position).getDistance()) + " km");
-
-        DateTime lastDay = new DateTime(mVehicle.get(position).getDateBook());
-        DateTime now = new DateTime();
-
-        final TextView tv = holder.txtTimeReduce;
-
-        CountDownTimer cdt = counters.get(holder.txtTimeReduce);
-        if(cdt!=null)
-        {
-            cdt.cancel();
-            cdt=null;
-        }
-
-        //int days = Days.daysBetween(lastDay.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).getDays();
-        //int minutes = Minutes.minutesBetween(lastDay,now).getMinutes();
-        long diffInMillis = lastDay.getMillis() - now.getMillis()+15*60*1000;
-        cdt = new CountDownTimer(diffInMillis, 1000) {
-
-            public void onTick(final long millisUntilFinished) {
-                if (millisUntilFinished > 0) {
-                    String timeRemaining ="";
-                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
-                    if (minutes >=10)
-                        timeRemaining += minutes;
-                    else
-                        timeRemaining += "0"+minutes;
-
-                    timeRemaining+=":";
-                    int seconds = (int) (millisUntilFinished / 1000) % 60;
-                    if (seconds >=10)
-                        timeRemaining += seconds;
-                    else
-                        timeRemaining += "0"+seconds;
-
-                    tv.setText("00:" + timeRemaining );
-                } else {
-                    tv.setText("Expired!!");
-                }
-            }
-
-            public void onFinish() {
-                tv.setText("done!");
-            }
-
-        };
-        counters.put(tv, cdt);
-        cdt.start();
-
+        holder.txtCarSize.setText(mVehicle.get(position).getCarType());
         holder.btnBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                bookingTrip(position);
             }
         });
     }
 
 
-    private void purchaseTrip(final int type, int position, final Dialog rootDialog) {
+    private void bookingTrip(int position) {
         RequestParams params;
         params = new RequestParams();
-        params.put("id_driver",preference.getDriverId());
-        params.put("driver_number", carNumber);
-        params.put("driver_phone", driverPhone);
-        params.put("price", price);
+        params.put("name", preference.getName());
+        params.put("phone", preference.getPhone());
         params.put("id_booking", mVehicle.get(position).getId());
-        params.put("type", type);
         final ProgressDialog dialog = new ProgressDialog(mContext);
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
-        if (type == 0){
-            dialog.setMessage("Đang đấu giá...");
-        }else
-            dialog.setMessage("Đang trả giá...");
+        dialog.setMessage("Đang đặt xe...");
         dialog.show();
-        BaseService.getHttpClient().post(Defines.URL_PURCHASE, params, new AsyncHttpResponseHandler() {
+        Log.e("TAG",params.toString());
+        BaseService.getHttpClient().post(Defines.URL_BOOKING_LOG, params, new AsyncHttpResponseHandler() {
 
             @Override
             public void onStart() {
@@ -197,17 +139,9 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
                 Log.i("JSON", new String(responseBody));
                 int result = Integer.valueOf(new String(responseBody));
                 if (result > 0)
-                    if (type == 0){
-                        Toast.makeText(mContext, "Đã đấu giá thành công",Toast.LENGTH_SHORT).show();
-                    }else
-                        Toast.makeText(mContext, "Đã mua thành công",Toast.LENGTH_SHORT).show();
-
-                    if (rootDialog != null)
-                        rootDialog.dismiss();
-                    if (onClick !=null)
-                        onClick.onItemClick();
+                    Toast.makeText(mContext, "Đặt xe thành công. Vui lòng chờ tài xế gọi tới",Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(mContext, "Giao dịch thất bại",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Đặt xe thất bại",Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
 
@@ -256,14 +190,14 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
 
 
         CardView cardview;
-        TextView txtSchedule;
+        TextView txtCarFrom;
+        TextView txtCarTo;
         TextView txtHireType;
         TextView txtDateFrom;
         TextView txtDateTo;
         TextView txtBookPrice;
         TextView txtMaxPrice;
-        TextView txtTimeReduce;
-        TextView txtDistance;
+        TextView txtCarSize;
         Button btnBooking;
 
         public ViewHolder(View itemView) {
@@ -271,18 +205,16 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
 
 
             cardview        = (CardView)        itemView.findViewById(R.id.card_view);
-            txtSchedule     = (TextView)        itemView.findViewById(R.id.txt_schedule);
+            txtCarFrom      = (TextView)        itemView.findViewById(R.id.txt_from);
+            txtCarTo        = (TextView)        itemView.findViewById(R.id.txt_to);
             txtHireType     = (TextView)        itemView.findViewById(R.id.txt_hire_type);
             txtDateFrom     = (TextView)        itemView.findViewById(R.id.txt_date_from);
             txtDateTo       = (TextView)        itemView.findViewById(R.id.txt_date_to);
             txtBookPrice    = (TextView)        itemView.findViewById(R.id.txt_book_price);
             txtMaxPrice     = (TextView)        itemView.findViewById(R.id.txt_book_price_max);
-            txtTimeReduce   = (TextView)        itemView.findViewById(R.id.txt_time_remaining);
-            txtDistance     = (TextView)        itemView.findViewById(R.id.txt_distance);
+            txtCarSize      = (TextView)        itemView.findViewById(R.id.txt_car_size);
             btnBooking      = (Button)          itemView.findViewById(R.id.btn_booking);
-            txtSchedule.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-            txtSchedule.setSelected(true);
-            txtSchedule.setSingleLine(true);
+
 
 
         }

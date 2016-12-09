@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@mipmap/header"
+            android:id="@+id/toolbar">
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:src="@mipmap/back"
+                android:paddingTop="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="15dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/btn_back" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/car_infor_title"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_view"
+        android:layout_width="match_parent"
+        android:background="@mipmap/bg_passenger_infor"
+        android:layout_marginTop="60dp"
+        android:layout_height="match_parent" >
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/vehicle_view"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rất tiếc , không có xe nào thỏa mãn"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:id="@+id/txt_no_result" />
+    <android.support.design.widget.FloatingActionButton
+        app:backgroundTint="@color/blue"
+        app:fabSize="normal"
+        android:layout_gravity="left|bottom"
+        android:scaleType="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:onClick="list_passenger_booking_listener"
+        android:layout_width="wrap_content"
+        android:id="@+id/btn_book_now"
+        android:layout_height="wrap_content" />
+
+</android.support.design.widget.CoordinatorLayout>

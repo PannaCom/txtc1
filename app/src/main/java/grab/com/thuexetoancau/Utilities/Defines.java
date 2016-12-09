@@ -16,16 +16,22 @@ public class Defines {
     public static  final String     URL_GET_WHO_HIRE            = HOSTNAME + "api/getCarWhoHire ";
     public static  final String     URL_BOOKING_TICKET          = HOSTNAME + "api/booking";
     public static  final String     URL_GET__BOOKING            = HOSTNAME + "api/getBooking";
-    public static  final String     URL_PURCHASE                = HOSTNAME + "api/bookingFinal";
+    public static  final String     URL_BOOKING_FINAL           = HOSTNAME + "api/bookingFinal";
     public static  final String     URL_REGISTER_DRIVER         = HOSTNAME + "api/driverRegister";
     public static  final String     URL_GET_AIRPORT             = HOSTNAME + "api/getAirportName";
     public static  final String     URL_GET_LONLAT_AIRPORT      = HOSTNAME + "api/getLonLatAirport";
     public static  final String     URL_LOGIN                   = HOSTNAME + "api/login";
+    public static  final String     URL_NOTICE                  = HOSTNAME + "api/getNotice";
+    public static  final String     URL_BOOKING_LOG             = HOSTNAME + "api/bookingLog";
+    public static  final String     URL_GET_BOOKING_LOG         = HOSTNAME + "api/getBookingLog";
+    public static  final String     URL_GET_BOOKING_CUSTOMER    = HOSTNAME + "api/getBookingForCustomer";
+    public static  final String     URL_GET_LIST_BOOKING_LOG    = HOSTNAME + "api/getlistbookinglog";
+    public static  final String     URL_GET_DRIVER_BY_ID        = HOSTNAME + "api/getDriverById";
 
     public static  final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 123;
     public static  final int REQUEST_CODE_LOCATION_PERMISSIONS = 234;
     public static  final int REQUEST_CODE_COARSE_LOCATION_PERMISSIONS = 345;
-
+    public static  final int REQUEST_CODE_TELEPHONE_PERMISSIONS = 124;
 
     public static  final String VEHICLE_PASS_ACTION         = "1";
     public static  final String CAR_TYPE_FROM_ACTION        = "2";

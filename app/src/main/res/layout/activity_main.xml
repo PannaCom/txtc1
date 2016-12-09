@@ -38,6 +38,7 @@
                         android:text="Hình thức thuê"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_dark"
                         android:id="@+id/textView5" />
 
                     <TextView
@@ -49,7 +50,7 @@
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
                         android:paddingLeft="10dp"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
 
                 </LinearLayout>
@@ -64,12 +65,14 @@
                     <TextView
                         android:text="Điểm đi"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_dark"
+                        android:id="@+id/textView10" />
 
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:layout_marginTop="5dp"
                         android:weightSum="1"
                         android:layout_height="match_parent">
@@ -110,6 +113,7 @@
                         android:text="Điểm đến"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_dark"
                         android:id="@+id/textView" />
 
                     <LinearLayout
@@ -119,7 +123,7 @@
                         android:gravity="center_vertical"
                         android:layout_marginTop="5dp"
                         android:weightSum="1"
-                        android:background="@mipmap/img_infor">
+                        android:background="@mipmap/btn_role">
 
                         <AutoCompleteTextView
                             android:id="@+id/auto_place_to"
@@ -153,6 +157,7 @@
 
                     <TextView
                         android:text="Loại xe"
+                        android:textColor="@color/color_text_dark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -164,7 +169,7 @@
                         android:textColor="@color/black"
                         android:layout_marginTop="5dp"
                         android:paddingLeft="10dp"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -176,6 +181,7 @@
 
                     <TextView
                         android:text="Đối tượng thuê"
+                        android:textColor="@color/color_text_dark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -188,7 +194,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -200,6 +206,7 @@
 
                     <TextView
                         android:text="Ngày giờ đi"
+                        android:textColor="@color/color_text_dark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -212,7 +219,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -224,6 +231,7 @@
 
                     <TextView
                         android:text="Ngày giờ về"
+                        android:textColor="@color/color_text_dark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -236,7 +244,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
                 </LinearLayout>
                 <TextView

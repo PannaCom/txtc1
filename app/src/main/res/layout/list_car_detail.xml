@@ -28,45 +28,15 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:weightSum="1"
-                    android:background="@mipmap/bg_vehicle_info">
-
-                    <TextView
-                        android:text="TextView"
-                        android:layout_width="0dp"
-                        android:textColor="@color/white"
-                        android:layout_weight="0.65"
-                        android:layout_marginLeft="10dp"
-                        android:lines="1"
-                        android:ellipsize="marquee"
-                        android:fadingEdge="horizontal"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:scrollHorizontally="true"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_schedule" />
-
-                    <TextView
-                        android:text="TextView"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.3"
-                        android:gravity="right"
-                        android:textSize="18sp"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_time_remaining" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp">
+                    android:background="@mipmap/header_card_car_infor">
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.7"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
                         android:weightSum="1">
 
                         <TextView
@@ -85,16 +55,111 @@
                             android:textColor="@color/black"
                             android:layout_weight="0.6" />
                     </LinearLayout>
+
+                    <TextView
+                        android:text="TextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.3"
+                        android:gravity="right"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txt_time_remaining" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:text="Điểm đi  "
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:text="TextView"
+                            android:layout_width="0dp"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txt_from"
+                            android:textStyle="bold"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:text="Điểm đến  "
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:text="TextView"
+                            android:layout_width="0dp"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txt_to"
+                            android:textStyle="bold"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:text="Số chỗ  "
+                            android:layout_width="0dp"
+                            android:layout_weight="0.2"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:text="TextView"
+                            android:layout_width="0dp"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txt_car_size"
+                            android:textStyle="bold"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:weightSum="1">
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:weightSum="1"
+                            android:layout_marginRight="3dp"
                             android:layout_weight="0.5">
 
                             <TextView
@@ -103,7 +168,7 @@
                                 android:layout_height="match_parent"
                                 android:textColor="@color/black"
                                 android:gravity="top"
-                                android:layout_weight="0.35" />
+                                android:layout_weight="0.4" />
 
                             <TextView
                                 android:text="TextView"
@@ -120,17 +185,18 @@
                             android:orientation="horizontal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
                             android:weightSum="1"
                             android:layout_weight="0.5">
 
                             <TextView
                                 android:text="Giá hiện tại"
                                 android:layout_width="0dp"
-                                android:layout_marginRight="5dp"
+
                                 android:gravity="top"
                                 android:layout_height="match_parent"
                                 android:textColor="@color/black"
-                                android:layout_weight="0.35" />
+                                android:layout_weight="0.4" />
 
                             <TextView
                                 android:text="TextView"
@@ -156,6 +222,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:weightSum="1"
+                            android:layout_marginRight="3dp"
                             android:layout_weight="0.5">
 
                             <TextView
@@ -164,7 +231,7 @@
                                 android:layout_height="match_parent"
                                 android:textColor="@color/black"
                                 android:gravity="top"
-                                android:layout_weight="0.35" />
+                                android:layout_weight="0.4" />
 
                             <TextView
                                 android:text="TextView"
@@ -182,6 +249,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:weightSum="1"
+                            android:layout_marginLeft="3dp"
                             android:layout_weight="0.5">
 
                             <TextView
@@ -191,7 +259,8 @@
                                 android:gravity="top"
                                 android:layout_height="match_parent"
                                 android:textColor="@color/black"
-                                android:layout_weight="0.35" />
+                                android:layout_weight="0.4"
+                                android:id="@+id/textView11" />
 
                             <TextView
                                 android:text="TextView"
@@ -206,29 +275,7 @@
 
                         </LinearLayout>
                     </LinearLayout>
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:weightSum="1">
 
-                        <TextView
-                            android:text="Khoảng cách : "
-                            android:layout_width="wrap_content"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:text="TextView"
-                            android:layout_width="0dp"
-                            android:textColor="@color/black"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/txt_distance"
-                            android:textStyle="bold"
-                            android:layout_weight="1" />
-                    </LinearLayout>
                 </LinearLayout>
 
 
@@ -241,7 +288,7 @@
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
+
                         android:layout_marginBottom="10dp"
                         android:weightSum="1"
                         android:gravity="right">

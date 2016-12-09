@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="grab.com.thuexetoancau">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,8 +18,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.GetInforPassengerActivity" />
-        <activity android:name=".UI.PassengerBookingActivity" />
+        <activity android:name=".UI.Activity.Passenger.GetInforPassengerActivity" />
+        <activity android:name=".UI.Activity.Passenger.FormPassengerBookingActivity" />
 
         <service android:name=".Fcm.FirebaseMessagingService">
             <intent-filter>
@@ -35,21 +36,24 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".UI.SelectRoleActivity" />
-        <activity android:name=".UI.RegisterDriverActivity" />
-        <activity android:name=".UI.SplashActivity">
+        <activity android:name=".UI.Activity.Together.SelectRoleActivity" />
+        <activity android:name=".UI.Activity.Driver.RegisterDriverActivity" />
+        <activity android:name=".UI.Activity.Together.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.ListDriverBookingActivity" />
-        <activity android:name=".UI.NewCarAuctionsActivity" />
-        <activity android:name=".UI.LoginDriverActivity" />
-        <activity android:name=".UI.PassengerSelectActionActivity" />
-        <activity android:name=".UI.BookingResultActivity"></activity>
-        <activity android:name=".UI.ListPassengerBookingActivity"></activity>
+        <activity android:name=".UI.Activity.Driver.ListDriverAuctionActivity" />
+        <activity android:name=".UI.Activity.Driver.NewCarAuctionsActivity" />
+        <activity android:name=".UI.Activity.Driver.LoginDriverActivity" />
+        <activity android:name=".UI.Activity.Passenger.PassengerSelectActionActivity" />
+        <activity android:name=".UI.Activity.Passenger.BookingResultActivity" />
+        <activity android:name=".UI.Activity.Passenger.ListPassengerBookingActivity" />
+        <activity android:name=".UI.Activity.Driver.ListPassengerBookingEachDriver" />
+        <activity android:name=".UI.Activity.Driver.ListDriverBookingActivity" />
+        <activity android:name=".UI.Activity.Driver.EditDriverActivity"></activity>
     </application>
 
 </manifest>

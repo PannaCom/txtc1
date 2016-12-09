@@ -7,15 +7,22 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#2d587d">
-        <TextView
-            android:text="Chọn hoạt động"
-            android:layout_width="match_parent"
+        android:background="@mipmap/header">
+        <ImageView
+            android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="24sp"
-            android:textColor="@color/white"
-            android:id="@+id/textView2" />
+            android:src="@mipmap/back"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btn_back" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/title_passenger_action"
+            android:layout_gravity="center" />
     </FrameLayout>
 
     <LinearLayout
@@ -36,7 +43,10 @@
             android:text="Đặt vé"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@mipmap/btn_cancel"
+            android:background="@drawable/click_confirm"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:layout_marginBottom="20dp"
             android:id="@+id/btn_booking" />
 
@@ -44,7 +54,10 @@
             android:text="Xem thông tin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@mipmap/btn_cancel"
+            android:background="@drawable/click_confirm"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:id="@+id/btn_infor" />
     </LinearLayout>
 

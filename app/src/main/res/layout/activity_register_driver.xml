@@ -6,8 +6,22 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/header"
+        android:background="@mipmap/header"
         android:id="@+id/toolbar">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/back"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btn_back" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/title_register"
+            android:layout_gravity="center" />
     </FrameLayout>
 
     <ScrollView
@@ -62,7 +76,7 @@
                 android:layout_marginBottom="30dp"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:background="@mipmap/border_form"
+                android:background="@drawable/border_form"
                 android:padding="15dp"
                 android:orientation="vertical">
                 <LinearLayout
@@ -79,7 +93,7 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:background="@drawable/click_infor"
+                        android:background="@drawable/click_role"
                         android:layout_marginTop="5dp"
                         android:weightSum="1"
                         android:layout_height="match_parent">
@@ -117,7 +131,7 @@
                         android:gravity="center_vertical"
                         android:layout_marginTop="5dp"
                         android:weightSum="1"
-                        android:background="@drawable/click_infor">
+                        android:background="@drawable/click_role">
 
                         <EditText
                             android:id="@+id/edt_phone"
@@ -151,7 +165,7 @@
                         android:gravity="center_vertical"
                         android:layout_marginTop="5dp"
                         android:weightSum="1"
-                        android:background="@drawable/click_infor">
+                        android:background="@drawable/click_role">
 
                         <EditText
                             android:id="@+id/edt_pass"
@@ -187,7 +201,7 @@
                         android:textColor="@color/black"
                         android:layout_marginTop="5dp"
                         android:paddingLeft="10dp"
-                        android:background="@drawable/click_infor"
+                        android:background="@drawable/click_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -202,7 +216,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <AutoCompleteTextView
+                    <TextView
                         android:id="@+id/edt_car_model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -211,7 +225,7 @@
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
                         android:paddingLeft="10dp"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -235,7 +249,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@drawable/click_infor"
+                        android:background="@drawable/click_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -258,7 +272,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@drawable/click_infor"
+                        android:background="@drawable/click_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -281,7 +295,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@drawable/click_infor"
+                        android:background="@drawable/click_role"
                         android:lines="1" />
                 </LinearLayout>
                 <LinearLayout
@@ -304,7 +318,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:inputType="text"
                         android:lines="1" />
                 </LinearLayout>
@@ -329,7 +343,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:inputType="number"
                         android:lines="1" />
                 </LinearLayout>
@@ -354,7 +368,7 @@
                         android:paddingLeft="10dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/black"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:inputType="text"
                         android:lines="1" />
                 </LinearLayout>

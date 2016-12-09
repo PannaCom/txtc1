@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/splash"
-    tools:context="grab.com.thuexetoancau.UI.SplashActivity">
+    tools:context="grab.com.thuexetoancau.UI.Activity.Together.SplashActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

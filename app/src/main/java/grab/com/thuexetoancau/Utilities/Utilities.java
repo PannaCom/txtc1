@@ -12,6 +12,8 @@ import android.view.View;
 
 import org.joda.time.DateTime;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 
 import grab.com.thuexetoancau.R;
@@ -84,7 +86,26 @@ public class Utilities {
 
         return dateFrom;
     }
+    public static String convertTime2Lines(DateTime current){
+        String dateFrom = current.getDayOfMonth()+"/"+current.getMonthOfYear()+"/"+current.getYear();
+        dateFrom+="\n";
 
+        if (current.getHourOfDay()>=10)
+            dateFrom+=current.getHourOfDay();
+        else
+            dateFrom+="0"+current.getHourOfDay();
+        dateFrom+=":";
+        if (current.getMinuteOfHour()>=10)
+            dateFrom+=current.getMinuteOfHour();
+        else
+            dateFrom+="0"+current.getMinuteOfHour();
+        dateFrom+=":";
+        if (current.getSecondOfMinute()>=10)
+            dateFrom+=current.getSecondOfMinute();
+        else
+            dateFrom+="0"+current.getSecondOfMinute();
+        return dateFrom;
+    }
     public static String convertCurrency(int currency){
         NumberFormat formatter = NumberFormat.getInstance();
         String moneyString = formatter.format(currency);
@@ -96,5 +117,27 @@ public class Utilities {
         }
         return moneyString;
     }
+    public static final String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
 
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

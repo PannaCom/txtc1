@@ -98,7 +98,8 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.txtSchedule.setText(mVehicle.get(position).getCarFrom()+" - "+mVehicle.get(position).getCarTo());
+        holder.txtCarFrom.setText(mVehicle.get(position).getCarFrom());
+        holder.txtCarTo.setText(mVehicle.get(position).getCarTo());
         holder.txtHireType.setText(mVehicle.get(position).getCarHireType());
 
         DateTime jDateFrom = new DateTime(mVehicle.get(position).getFromDate());
@@ -112,11 +113,8 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         else
             holder.txtMaxPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getCurrentPrice())+" Đ");
      //   holder.txtTimeReduce.setText(mVehicle.get(position).getTimeToReduce());
-        DecimalFormat df = new DecimalFormat("#.#");
-        if ((int) mVehicle.get(position).getDistance() == 0)
-            holder.txtDistance.setText(df.format(mVehicle.get(position).getDistance()*1000) + " m");
-        else
-            holder.txtDistance.setText(df.format(mVehicle.get(position).getDistance()) + " km");
+
+        holder.txtCarSize.setText(mVehicle.get(position).getCarType() +" chỗ");
 
         DateTime lastDay = new DateTime(mVehicle.get(position).getDateBook());
         DateTime now = new DateTime();
@@ -153,12 +151,12 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
                     tv.setText("00:" + timeRemaining );
                 } else {
-                    tv.setText("Expired!!");
+                    tv.setText("Đã hết hạn");
                 }
             }
 
             public void onFinish() {
-                tv.setText("done!");
+                tv.setText("Đã hết hạn");
             }
 
         };
@@ -261,7 +259,7 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         }else
             dialog.setMessage("Đang trả giá...");
         dialog.show();
-        BaseService.getHttpClient().post(Defines.URL_PURCHASE, params, new AsyncHttpResponseHandler() {
+        BaseService.getHttpClient().post(Defines.URL_BOOKING_FINAL, params, new AsyncHttpResponseHandler() {
 
             @Override
             public void onStart() {
@@ -333,14 +331,15 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
 
         CardView cardview;
-        TextView txtSchedule;
+        TextView txtCarFrom;
+        TextView txtCarTo;
         TextView txtHireType;
         TextView txtDateFrom;
         TextView txtDateTo;
         TextView txtBookPrice;
         TextView txtMaxPrice;
         TextView txtTimeReduce;
-        TextView txtDistance;
+        TextView txtCarSize;
         Button btnCompetitive, btnPurchase;
 
         public ViewHolder(View itemView) {
@@ -348,19 +347,17 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
 
             cardview        = (CardView)        itemView.findViewById(R.id.card_view);
-            txtSchedule     = (TextView)        itemView.findViewById(R.id.txt_schedule);
+            txtCarFrom      = (TextView)        itemView.findViewById(R.id.txt_from);
+            txtCarTo        = (TextView)        itemView.findViewById(R.id.txt_to);
             txtHireType     = (TextView)        itemView.findViewById(R.id.txt_hire_type);
             txtDateFrom     = (TextView)        itemView.findViewById(R.id.txt_date_from);
             txtDateTo       = (TextView)        itemView.findViewById(R.id.txt_date_to);
             txtBookPrice    = (TextView)        itemView.findViewById(R.id.txt_book_price);
             txtMaxPrice     = (TextView)        itemView.findViewById(R.id.txt_book_price_max);
             txtTimeReduce   = (TextView)        itemView.findViewById(R.id.txt_time_remaining);
-            txtDistance     = (TextView)        itemView.findViewById(R.id.txt_distance);
+            txtCarSize      = (TextView)        itemView.findViewById(R.id.txt_car_size);
             btnCompetitive  = (Button)          itemView.findViewById(R.id.btn_competitive);
             btnPurchase     = (Button)          itemView.findViewById(R.id.btn_purchase);
-            txtSchedule.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-            txtSchedule.setSelected(true);
-            txtSchedule.setSingleLine(true);
 
 
         }

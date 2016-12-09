@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@mipmap/bg_select_role"
-    tools:context="grab.com.thuexetoancau.UI.SelectRoleActivity">
+    tools:context="grab.com.thuexetoancau.UI.Activity.Together.SelectRoleActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/click_role"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/color_text"
+            android:textStyle="bold"
             android:layout_marginBottom="10dp"
             android:id="@+id/btn_passenger" />
         <Button
@@ -30,7 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/click_role"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/color_text"
+            android:textStyle="bold"
             android:id="@+id/btn_driver" />
     </LinearLayout>
 </RelativeLayout>

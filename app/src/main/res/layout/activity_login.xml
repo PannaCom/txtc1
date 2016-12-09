@@ -7,21 +7,22 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#2d587d">
+        android:background="@mipmap/header">
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
             android:src="@mipmap/back"
-            android:layout_marginLeft="10dp"
+            android:paddingTop="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:layout_gravity="center_vertical"
             android:id="@+id/btn_back" />
-        <TextView
-            android:text="Thông tin khách hàng"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="24sp"
-            android:textColor="@color/white"
-            android:id="@+id/textView2" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/infor_title"
+            android:layout_gravity="center" />
     </FrameLayout>
 
     <LinearLayout
@@ -53,8 +54,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/new_name"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:gravity="bottom"
+                    android:layout_height="100dp"
+                    android:gravity="center"
                     app:hintTextAppearance="@style/TextLabel">
                     <EditText
                         android:layout_width="match_parent"
@@ -66,7 +67,7 @@
                         android:paddingLeft="10dp"
                         android:textColorHint="@color/colorPrimaryDark"
                         android:focusableInTouchMode="true"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:id="@+id/edt_name" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -83,8 +84,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/new_pass"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:gravity="bottom"
+                    android:layout_height="100dp"
+                    android:gravity="center"
                     app:hintTextAppearance="@style/TextLabel">
                     <EditText
                         android:layout_width="match_parent"
@@ -95,7 +96,7 @@
                         android:focusable="true"
                         android:paddingLeft="10dp"
                         android:focusableInTouchMode="true"
-                        android:background="@mipmap/img_infor"
+                        android:background="@mipmap/btn_role"
                         android:inputType="phone"
                         android:id="@+id/edt_pass" />
                 </android.support.design.widget.TextInputLayout>
