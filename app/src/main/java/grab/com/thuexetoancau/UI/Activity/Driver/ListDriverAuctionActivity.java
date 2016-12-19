@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +39,7 @@ import grab.com.thuexetoancau.Utilities.BaseService;
 import grab.com.thuexetoancau.Utilities.Constants;
 import grab.com.thuexetoancau.Utilities.Defines;
 import grab.com.thuexetoancau.Utilities.GPSTracker;
+import grab.com.thuexetoancau.Utilities.SharePreference;
 import grab.com.thuexetoancau.Utilities.Utilities;
 
 public class ListDriverAuctionActivity extends AppCompatActivity {
@@ -55,6 +57,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
     private GPSTracker mLocation;
     private ImageView imgMenu;
     private boolean doubleBackToExitPressedOnce = false;
+    private TextView txtAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,9 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         txtNoResult                 =   (TextView)              findViewById(R.id.txt_no_result);
         swipeToRefresh              =   (SwipeRefreshLayout)    findViewById(R.id.swipe_view);
         ImageView btnBack           =   (ImageView)             findViewById(R.id.btn_back);
-        imgMenu                     = (ImageView)               findViewById(R.id.img_menu);
+        imgMenu                     =   (ImageView)             findViewById(R.id.img_menu);
+        txtAccount                  =   (TextView)              findViewById(R.id.txt_account);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +130,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(mContext);
         vehicleView.setLayoutManager(llm);
         if (Utilities.isOnline(mContext)) {
+            getCurrentAccount();
             mLocation = new GPSTracker(this);
             if (mLocation.handlePermissionsAndGetLocation()) {
                 if (!mLocation.canGetLocation()) {
@@ -138,6 +144,43 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
 
 
     }
+
+    private void getCurrentAccount() {
+        SharePreference preference = new SharePreference(this);
+        RequestParams params;
+        params = new RequestParams();
+        params.put("id_driver", preference.getDriverId());
+        Log.e("TAG",params.toString());
+        BaseService.getHttpClient().post(Defines.URL_GET_MONEY_DRIVER, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                // called when response HTTP status is "200 OK"
+                int money = Integer.valueOf(new String(responseBody));
+                txtAccount.setText(Utilities.convertCurrency(money)+" VNĐ");
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
     public void list_passenger_booking_listener(View v) {
         Intent intent = new Intent(mContext, ListDriverBookingActivity.class);
         startActivity(intent);
@@ -220,16 +263,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                         parseJsonResult(jsonobject);
                     }
                     if(vehicles.size()>0) {
-                        adapter = new BookingCarAdapter(mContext, vehicles);
-                        vehicleView.setAdapter(adapter);
-                        adapter.setOnRequestComplete(new BookingCarAdapter.onClickListener() {
-                            @Override
-                            public void onItemClick() {
-                                dummyData();
-                            }
-                        });
-                        //swipeToRefresh.setRefreshing(false);
-
+                        removeAuctionExpire();
                     }else{
                         txtNoResult.setVisibility(View.VISIBLE);
                         txtNoResult.setText("Không có xe nào cho tuyến này");
@@ -260,7 +294,43 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
             }
         });
     }
+    private void removeAuctionExpire() {
+        ArrayList<BookingObject> temp = new ArrayList<>();
+        for (BookingObject bookin : vehicles)
+            temp.add(bookin);
+        for (BookingObject bookin : temp){
+            DateTime lastDay = new DateTime(bookin.getFromDate());
+            DateTime now = new DateTime();
+            long diffInMillis = 0;
+            if (bookin.getBookPrice() > Defines.BOUNDER_TRIP_PRICE)
+                diffInMillis = lastDay.getMillis() - now.getMillis()-Defines.TIME_BEFORE_AUCTION_LONG;
+            else
+                diffInMillis = lastDay.getMillis() - now.getMillis()-Defines.TIME_BEFORE_AUCTION_SHORT;
 
+            if (diffInMillis <= 0) {
+                for (BookingObject candidate : vehicles)
+                if (bookin.getId() == candidate.getId()) {
+                    vehicles.remove(candidate);
+                    break;
+                }
+            }
+        }
+        adapter = new BookingCarAdapter(mContext, vehicles);
+        vehicleView.setAdapter(adapter);
+        adapter.setOnRequestComplete(new BookingCarAdapter.onClickListener() {
+            @Override
+            public void onItemClick() {
+                dummyData();
+            }
+        });
+        adapter.setOnPaySuccess(new BookingCarAdapter.onPayMoneyListener() {
+            @Override
+            public void onSuccess() {
+                getCurrentAccount();
+            }
+        });
+        //swipeToRefresh.setRefreshing(false);
+    }
     private void parseJsonResult(JSONObject jsonobject) {
         try {
             int id              = jsonobject.getInt("id");

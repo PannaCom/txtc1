@@ -55,37 +55,16 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
     private Context mContext;
     private List<BookingObject> mVehicle;
     private SharePreference preference;
-    private String driverPhone, carNumber;
     private int price;
     private HashMap<TextView,CountDownTimer> counters;
     private onClickListener onClick;
+    private onPayMoneyListener onSuccess;
     public BookingCarAdapter(Context context, ArrayList<BookingObject> vehicle) {
         mContext = context;
         this.mVehicle = vehicle;
         preference = new SharePreference(mContext);
-        getDataFromPreference();
         this.counters = new HashMap<>();
-    }
 
-    private void getDataFromPreference() {
-        try {
-            JSONObject carObject = new JSONObject(preference.getCarInfor());
-            //String hoten        = carObject.getString("hoten");
-            driverPhone  = carObject.getString("sodienthoai");
-            carNumber       = carObject.getString("bienso");
-            //String hangxe       = carObject.getString("hangxe");
-            //String tenxe        = carObject.getString("tenxe");
-           // String socho        = carObject.getString("socho");
-            //String loaixe       = carObject.getString("loaixe");
-            //String namxe        = carObject.getString("namxe");
-            //String cmt          = carObject.getString("cmt");
-            //String banglai      = carObject.getString("banglai");
-
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -116,7 +95,7 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
         holder.txtCarSize.setText(mVehicle.get(position).getCarType() +" chỗ");
 
-        DateTime lastDay = new DateTime(mVehicle.get(position).getDateBook());
+        DateTime lastDay = new DateTime(mVehicle.get(position).getFromDate());
         DateTime now = new DateTime();
 
         final TextView tv = holder.txtTimeReduce;
@@ -130,12 +109,26 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
         //int days = Days.daysBetween(lastDay.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).getDays();
         //int minutes = Minutes.minutesBetween(lastDay,now).getMinutes();
-        long diffInMillis = lastDay.getMillis() - now.getMillis()+15*60*1000;
+        long diffInMillis = 0;
+        if (mVehicle.get(position).getBookPrice() > Defines.BOUNDER_TRIP_PRICE)
+            diffInMillis = lastDay.getMillis() - now.getMillis()-Defines.TIME_BEFORE_AUCTION_LONG;
+        else
+            diffInMillis = lastDay.getMillis() - now.getMillis()-Defines.TIME_BEFORE_AUCTION_SHORT;
+
         cdt = new CountDownTimer(diffInMillis, 1000) {
 
             public void onTick(final long millisUntilFinished) {
                 if (millisUntilFinished > 0) {
                     String timeRemaining ="";
+
+                    int hour = (int) ((millisUntilFinished / (1000 * 60*60)) % 60);
+                    if (hour >=10)
+                        timeRemaining += hour;
+                    else
+                        timeRemaining += "0"+hour;
+
+                    timeRemaining+=":";
+
                     int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                     if (minutes >=10)
                         timeRemaining += minutes;
@@ -149,33 +142,58 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                     else
                         timeRemaining += "0"+seconds;
 
-                    tv.setText("00:" + timeRemaining );
+                    tv.setText(timeRemaining );
+                    holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            price = mVehicle.get(position).getBookPrice();
+                            purchaseTrip(1, position, null);
+
+                        }
+                    });
+                    holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showDialogPurchase(position);
+                        }
+                    });
                 } else {
-                    tv.setText("Đã hết hạn");
+                    tv.setText("00:00:00");
+                    holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(mContext, "Đã hết thời gian trả giá",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(mContext, "Đã hết thời gian đấu giá",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
 
             public void onFinish() {
-                tv.setText("Đã hết hạn");
+                tv.setText("00:00:00");
+                holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Đã hết thời gian trả giá",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Đã hết thời gian đấu giá",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
         };
         counters.put(tv, cdt);
         cdt.start();
-        holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                price = mVehicle.get(position).getBookPrice();
-                purchaseTrip(1, position, null);
 
-            }
-        });
-        holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogPurchase(position);
-            }
-        });
     }
 
     private void showDialogPurchase(final int position) {
@@ -242,12 +260,12 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         dialog.show();
     }
 
-    private void purchaseTrip(final int type, int position, final Dialog rootDialog) {
+    private void purchaseTrip(final int type, final int position, final Dialog rootDialog) {
         RequestParams params;
         params = new RequestParams();
         params.put("id_driver",preference.getDriverId());
-        params.put("driver_number", carNumber);
-        params.put("driver_phone", driverPhone);
+        params.put("driver_number", preference.getCarNumber());
+        params.put("driver_phone", preference.getPhone());
         params.put("price", price);
         params.put("id_booking", mVehicle.get(position).getId());
         params.put("type", type);
@@ -274,9 +292,11 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                 if (result > 0)
                     if (type == 0){
                         Toast.makeText(mContext, "Đã đấu giá thành công",Toast.LENGTH_SHORT).show();
-                    }else
-                        Toast.makeText(mContext, "Đã mua thành công",Toast.LENGTH_SHORT).show();
 
+                    }else {
+                        Toast.makeText(mContext, "Đã mua thành công", Toast.LENGTH_SHORT).show();
+                        payMoney( mVehicle.get(position).getId());
+                    }
                     if (rootDialog != null)
                         rootDialog.dismiss();
                     if (onClick !=null)
@@ -301,9 +321,47 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
             }
         });
     }
+
+    private void payMoney(int id_booking) {
+        RequestParams params;
+        params = new RequestParams();
+        params.put("id_driver",preference.getDriverId());
+        params.put("id_booking",id_booking);
+        BaseService.getHttpClient().post(Defines.URL_CONFIRM, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                if (onSuccess != null)
+                    onSuccess.onSuccess();
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     public void setOnRequestComplete(final onClickListener onClick)
     {
         this.onClick = onClick;
+    }
+    public void setOnPaySuccess(final onPayMoneyListener onSuccess)
+    {
+        this.onSuccess = onSuccess;
     }
     @Override
     public int getItemCount() {
@@ -365,6 +423,12 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
     public interface onClickListener
     {
         public void onItemClick();
+
+    }
+
+    public interface onPayMoneyListener
+    {
+        public void onSuccess();
 
     }
 

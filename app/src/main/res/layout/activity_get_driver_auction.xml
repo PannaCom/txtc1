@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:background="@mipmap/bg_passenger_infor"
         android:layout_marginTop="60dp"
+        android:layout_marginBottom="50dp"
         android:layout_height="match_parent" >
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
@@ -63,17 +64,35 @@
         android:layout_gravity="center"
         android:id="@+id/txt_no_result" />
 
-    <android.support.design.widget.FloatingActionButton
-        app:backgroundTint="@color/blue"
-        app:fabSize="normal"
-        android:layout_gravity="left|bottom"
-        android:scaleType="center"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:onClick="list_passenger_booking_listener"
-        android:layout_width="wrap_content"
-        android:id="@+id/btn_book_now"
-        android:src="@mipmap/float_list"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:background="@color/green"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:text="Tài khoản "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView16"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="0.2" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_account"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -29,13 +29,6 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/title_list_vehicle"
                 android:layout_gravity="center" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="right|center_vertical"
-                android:id="@+id/btn_add"
-                android:src="@mipmap/all"/>
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.widget.SwipeRefreshLayout
@@ -62,5 +55,23 @@
         android:visibility="gone"
         android:layout_gravity="center"
         android:id="@+id/txt_no_result" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/btn_add"
+        android:background="@drawable/click_booking"
+        android:gravity="center">
+
+        <TextView
+            android:text="Ấn vào đây để đăng chuyến tìm khách chiều về"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:id="@+id/textView12" />
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

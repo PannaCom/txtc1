@@ -48,36 +48,14 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
     private Context mContext;
     private List<BookingObject> mVehicle;
     private SharePreference preference;
-    private String driverPhone, carNumber;
     private int price;
     private onClickListener onClick;
     public PassengerCarAdapter(Context context, ArrayList<BookingObject> vehicle) {
         mContext = context;
         this.mVehicle = vehicle;
         preference = new SharePreference(mContext);
-        getDataFromPreference();
     }
 
-    private void getDataFromPreference() {
-        try {
-            JSONObject carObject = new JSONObject(preference.getCarInfor());
-            //String hoten        = carObject.getString("hoten");
-            driverPhone  = carObject.getString("sodienthoai");
-            carNumber       = carObject.getString("bienso");
-            //String hangxe       = carObject.getString("hangxe");
-            //String tenxe        = carObject.getString("tenxe");
-           // String socho        = carObject.getString("socho");
-            //String loaixe       = carObject.getString("loaixe");
-            //String namxe        = carObject.getString("namxe");
-            //String cmt          = carObject.getString("cmt");
-            //String banglai      = carObject.getString("banglai");
-
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {

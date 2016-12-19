@@ -14,7 +14,7 @@ public class SharePreference {
     private String TOKEN        = "token";
     private String DRIVER_ID = "driver id";
     private String ROLE = "role";
-    private String CAR_INFOR = "car info";
+    private String CAR_NUMBER = "car number";
     // constructor
     public SharePreference(Context activity) {
         this.activity = activity;
@@ -81,14 +81,14 @@ public class SharePreference {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
         return sp.getInt(ROLE,0);
     }
-    public void saveCarInfor(String place) {
+    public void saveCarNumber(String carNumber) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(CAR_INFOR, place);
+        editor.putString(CAR_NUMBER, carNumber);
         editor.apply();
     }
-    public String getCarInfor() {
+    public String getCarNumber() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
-        return sp.getString(CAR_INFOR,"");
+        return sp.getString(CAR_NUMBER,"");
     }
 }

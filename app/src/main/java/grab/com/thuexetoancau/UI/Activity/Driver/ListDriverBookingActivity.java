@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -40,7 +41,7 @@ public class ListDriverBookingActivity extends AppCompatActivity {
     private DriverVehicleAdapter adapter;
     private ProgressDialog dialog;
     private SwipeRefreshLayout swipeToRefresh;
-    private ImageView btnAdd;
+    private LinearLayout btnAdd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,7 @@ public class ListDriverBookingActivity extends AppCompatActivity {
         txtNoResult                 =   (TextView)              findViewById(R.id.txt_no_result);
         swipeToRefresh              =   (SwipeRefreshLayout)    findViewById(R.id.swipe_view);
         ImageView btnBack           =   (ImageView)             findViewById(R.id.btn_back);
-        btnAdd                      =   (ImageView)             findViewById(R.id.btn_add);
+        btnAdd                      =   (LinearLayout)          findViewById(R.id.btn_add);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

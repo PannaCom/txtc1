@@ -185,12 +185,17 @@ public class LoginDriverActivity extends AppCompatActivity {
             preference.saveName(name);
             String phone        = result.getString("phone");
             preference.savePhone(phone);
+
+            String  carNumber   = result.getString("car_number");
+            preference.saveCarNumber(carNumber);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
+
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

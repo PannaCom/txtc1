@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Created by DatNT on 6/29/2016.
  */
 public class Defines {
-    public static  final String HOSTNAME                    = "http://thuexetoancau.vn/";
+    public static  final String HOSTNAME                        = "http://thuexetoancau.vn/";
     public static  final String     URL_GET_CAR_HIRE_TYPE       = HOSTNAME + "api/getCarHireType";
     public static  final String     URL_GET_CAR_SIZE            = HOSTNAME + "api/getCarSize";
     public static  final String     URL_GET_CAR_TYPE            = HOSTNAME + "api/getListCarType";
@@ -27,6 +27,8 @@ public class Defines {
     public static  final String     URL_GET_BOOKING_CUSTOMER    = HOSTNAME + "api/getBookingForCustomer";
     public static  final String     URL_GET_LIST_BOOKING_LOG    = HOSTNAME + "api/getlistbookinglog";
     public static  final String     URL_GET_DRIVER_BY_ID        = HOSTNAME + "api/getDriverById";
+    public static  final String     URL_GET_MONEY_DRIVER        = HOSTNAME + "api/getMoneyDriver";
+    public static  final String     URL_CONFIRM                 = HOSTNAME + "api/confirm";
 
     public static  final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 123;
     public static  final int REQUEST_CODE_LOCATION_PERMISSIONS = 234;
@@ -48,6 +50,10 @@ public class Defines {
 
     public static String[] carModel = {};
     public static ArrayList<String> provinceFrom;
+
+    public static int BOUNDER_TRIP_PRICE                 = 1000000;
+    public static int TIME_BEFORE_AUCTION_LONG                 = 5*60*60*1000;
+    public static int TIME_BEFORE_AUCTION_SHORT                 = 1*60*60*1000;
 
     public static boolean startThread = false;
 }

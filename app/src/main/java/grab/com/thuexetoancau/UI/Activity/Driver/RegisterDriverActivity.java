@@ -418,7 +418,7 @@ public class RegisterDriverActivity extends AppCompatActivity implements GetAllR
                     preference.saveRole(1);
                     preference.savePhone(edtPhone.getText().toString());
                     preference.saveName(edtName.getText().toString());
-                    saveVehicleInfor();
+                    preference.saveCarNumber(edtCarNumber.getText().toString());
                     Intent intent = new Intent(mContext, ListDriverAuctionActivity.class);
                     startActivity(intent);
                     finish();
@@ -450,28 +450,6 @@ public class RegisterDriverActivity extends AppCompatActivity implements GetAllR
         this.aCarType = aCarTypes;
         for (String item : aCarSize)
             this.aCarSize.add(item+" chỗ");
-    }
-    private void saveVehicleInfor() {
-        JSONObject carObject = new JSONObject();
-        try {
-            carObject.put("hoten", edtName.getText().toString());
-            carObject.put("sodienthoai", edtPhone.getText().toString());
-            carObject.put("hangxe", txtCarMade.getText().toString());
-            carObject.put("tenxe", txtCarModel.getText().toString());
-            carObject.put("socho", txtCarSize.getText().toString());
-            carObject.put("loaixe", txtCarType.getText().toString());
-            carObject.put("bienso", edtCarNumber.getText().toString());
-            carObject.put("namxe", txtCarYear.getText().toString());
-            carObject.put("cmt", edtIdendify.getText().toString());
-            carObject.put("pass", edtPass.getText().toString());
-            carObject.put("banglai", edtLicense.getText().toString());
-
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        preference.saveCarInfor(carObject.toString());
-
     }
 
 }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +38,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -642,6 +646,19 @@ public class BookingFormFragment extends Fragment {
             requestFocus(txtWarn);
             return true;
         }
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
+        // Parsing the date
+        DateTime fromDate = dtf.parseDateTime(edtDateFrom.getText().toString());
+        DateTime toDate = dtf.parseDateTime(edtDateTo.getText().toString());
+
+        long diffInMillis = toDate.getMillis() - fromDate.getMillis() - Defines.TIME_BEFORE_AUCTION_SHORT;
+        if (diffInMillis <= 0){
+            txtWarn.setVisibility(View.VISIBLE);
+            txtWarn.setText("Thời gian về phải lớn hơn thời gian đi ít nhất 1 tiếng");
+            requestFocus(txtWarn);
+            return true;
+        }
+
         return false;
     }
     private void requestFocus(View view) {
@@ -655,11 +672,68 @@ public class BookingFormFragment extends Fragment {
     private void showDateTimeDialog(final TextView txtDate){
         final View dialogView = View.inflate(mContext, R.layout.date_time_picker, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        final DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.datepicker);
+        datePicker.setMinDate(System.currentTimeMillis() - 1000);
+        final  TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.timepicker);
+        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker timePicker, int mHour, int mMinute) {
+                Calendar now = Calendar.getInstance();
+                int year = now.get(Calendar.YEAR);
+                int month = now.get(Calendar.MONTH); // Note: zero based!
+                int day = now.get(Calendar.DAY_OF_MONTH);
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+                int minutes = now.get(Calendar.MINUTE);
+                if (datePicker.getYear() == year && datePicker.getMonth() == month && datePicker.getDayOfMonth() == day ){
+                    if (mHour < hour) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            timePicker.setHour(hour);
+                            timePicker.setMinute(minutes);
+                        }else {
+                            timePicker.setCurrentHour(hour);
+                            timePicker.setCurrentMinute(minutes);
+                        }
+
+                    }else if (mHour == hour){
+                        if (mMinute < minutes){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                timePicker.setMinute(minutes);
+                            }else {
+                                timePicker.setCurrentMinute(minutes);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                Calendar now = Calendar.getInstance();
+                int cYear = now.get(Calendar.YEAR);
+                int cMonth = now.get(Calendar.MONTH);
+                int cDay = now.get(Calendar.DAY_OF_MONTH);
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+                int minutes = now.get(Calendar.MINUTE);
+                if (cYear == year && cMonth == month && cDay == dayOfMonth ) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        timePicker.setHour(hour);
+                        timePicker.setMinute(minutes);
+                    }else {
+                        timePicker.setCurrentHour(hour);
+                        timePicker.setCurrentMinute(minutes);
+                    }
+                }
+
+            }
+        });
         dialogView.findViewById(R.id.datetimeset).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.datepicker);
-                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.timepicker);
+
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                         datePicker.getMonth(),
                         datePicker.getDayOfMonth(),
@@ -674,8 +748,10 @@ public class BookingFormFragment extends Fragment {
                 String formatedDate = sdf.format(new Date(year-1900, month, day));
                 txtDate.setText(formatedDate + ' ' + time);
                 alertDialog.dismiss();
+
             }
         });
+
         alertDialog.setView(dialogView);
         alertDialog.show();
     }

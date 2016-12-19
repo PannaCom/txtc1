@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner"
+                android:minDate=""
                 android:layout_height="wrap_content" />
             <View
                 android:layout_width="match_parent"

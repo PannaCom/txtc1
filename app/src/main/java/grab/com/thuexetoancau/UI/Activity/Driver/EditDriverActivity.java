@@ -95,8 +95,6 @@ public class EditDriverActivity extends AppCompatActivity  implements GetAllRegi
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, LoginDriverActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -112,18 +110,6 @@ public class EditDriverActivity extends AppCompatActivity  implements GetAllRegi
                 Toast.makeText(mContext, "Bạn không thể sửa số điện thoại",Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            Intent intent = new Intent(mContext, LoginDriverActivity.class);
-            startActivity(intent);
-            finish();
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
     }
     private void showDialogCarMade() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -442,7 +428,7 @@ public class EditDriverActivity extends AppCompatActivity  implements GetAllRegi
                 int id = Integer.valueOf(new String(responseBody));
                 if (id > 0){
                     preference.saveName(edtName.getText().toString());
-                    saveVehicleInfor();
+                    preference.saveCarNumber(edtCarNumber.getText().toString());
                     Intent intent = new Intent(mContext, ListDriverAuctionActivity.class);
                     startActivity(intent);
                     finish();
@@ -474,27 +460,6 @@ public class EditDriverActivity extends AppCompatActivity  implements GetAllRegi
         this.aCarType = aCarTypes;
         for (String item : aCarSize)
             this.aCarSize.add(item+" chỗ");
-    }
-    private void saveVehicleInfor() {
-        JSONObject carObject = new JSONObject();
-        try {
-            carObject.put("hoten", edtName.getText().toString());
-            carObject.put("sodienthoai", edtPhone.getText().toString());
-            carObject.put("hangxe", txtCarMade.getText().toString());
-            carObject.put("tenxe", txtCarModel.getText().toString());
-            carObject.put("socho", txtCarSize.getText().toString());
-            carObject.put("loaixe", txtCarType.getText().toString());
-            carObject.put("bienso", edtCarNumber.getText().toString());
-            carObject.put("namxe", txtCarYear.getText().toString());
-            carObject.put("cmt", edtIdendify.getText().toString());
-            carObject.put("banglai", edtLicense.getText().toString());
-
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        preference.saveCarInfor(carObject.toString());
-
     }
     private void getDataFromDriverId() {
         RequestParams params;
