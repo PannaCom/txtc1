@@ -140,4 +140,13 @@ public class Utilities {
         }
         return "";
     }
+    public static int changeTimeFromStringToInt(String timeRemaining){
+        int second = 1000;
+        if(!(timeRemaining.equals("Đã hết hạn") || timeRemaining.equals("00:00"))){
+            int hour  = Integer.parseInt(timeRemaining.split(":")[0]);
+            int minute = Integer.parseInt(timeRemaining.split(":")[1]);
+            second = (Integer.parseInt(timeRemaining.split(":")[2]) + minute*60+hour*60*60)*1000;
+        }
+        return second;
+    }
 }

@@ -57,7 +57,7 @@
         android:id="@+id/txt_no_result" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
@@ -65,8 +65,17 @@
         android:background="@drawable/click_booking"
         android:gravity="center">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/all"
+            android:layout_marginRight="5dp"
+            android:scaleY="0.5"
+            android:scaleX="0.5"
+            android:id="@+id/imageView2" />
+
         <TextView
-            android:text="Ấn vào đây để đăng chuyến tìm khách chiều về"
+            android:text="Đăng chuyến tìm khách chiều về"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

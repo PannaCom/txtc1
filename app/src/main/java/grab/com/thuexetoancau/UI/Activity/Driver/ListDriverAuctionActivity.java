@@ -58,6 +58,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
     private ImageView imgMenu;
     private boolean doubleBackToExitPressedOnce = false;
     private TextView txtAccount;
+    private int money;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,16 +110,13 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                                 Intent intent = new Intent(mContext, EditDriverActivity.class);
                                 startActivity(intent);
                                 return true;
-                            case R.id.action_list:
-                                Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
-                                startActivity(intentList);
-                                return true;
                         }
                         return false;
                     }
                 });
             }
         });
+
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -144,7 +142,10 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
 
 
     }
-
+    public void newDriverCar(View v) {
+        Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
+        startActivity(intentList);
+    }
     private void getCurrentAccount() {
         SharePreference preference = new SharePreference(this);
         RequestParams params;
@@ -161,7 +162,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 // called when response HTTP status is "200 OK"
-                int money = Integer.valueOf(new String(responseBody));
+                money = Integer.valueOf(new String(responseBody));
                 txtAccount.setText(Utilities.convertCurrency(money)+" VNĐ");
             }
 
@@ -243,6 +244,8 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         params = new RequestParams();
         params.put("lat", latitude);
         params.put("lon", longitude);
+        params.put("lon", longitude);
+        params.put("car_hire_type","Khứ hồi,Một chiều,Sân bay");
         params.put("order", 1);
         Log.e("TAG",params.toString());
         BaseService.getHttpClient().post(Defines.URL_GET__BOOKING, params, new AsyncHttpResponseHandler() {
@@ -315,7 +318,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                 }
             }
         }
-        adapter = new BookingCarAdapter(mContext, vehicles);
+        adapter = new BookingCarAdapter(mContext, vehicles,money);
         vehicleView.setAdapter(adapter);
         adapter.setOnRequestComplete(new BookingCarAdapter.onClickListener() {
             @Override

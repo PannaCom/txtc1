@@ -140,6 +140,7 @@ public class LoginDriverActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 // called when response HTTP status is "200 OK"
                 Log.i("JSON", new String(responseBody));
+                dialog.dismiss();
                 try {
                     JSONArray data = new JSONArray(new String(responseBody));
                     if (data.length() == 0) {
@@ -157,7 +158,7 @@ public class LoginDriverActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                dialog.dismiss();
+
             }
 
             @Override

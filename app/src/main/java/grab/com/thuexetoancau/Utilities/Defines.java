@@ -29,6 +29,7 @@ public class Defines {
     public static  final String     URL_GET_DRIVER_BY_ID        = HOSTNAME + "api/getDriverById";
     public static  final String     URL_GET_MONEY_DRIVER        = HOSTNAME + "api/getMoneyDriver";
     public static  final String     URL_CONFIRM                 = HOSTNAME + "api/confirm";
+    public static  final String     URL_WHO_WIN                 = HOSTNAME + "api/whoWin";
 
     public static  final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 123;
     public static  final int REQUEST_CODE_LOCATION_PERMISSIONS = 234;

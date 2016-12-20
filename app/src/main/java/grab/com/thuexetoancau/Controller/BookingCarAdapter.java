@@ -1,12 +1,18 @@
 package grab.com.thuexetoancau.Controller;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -59,12 +65,14 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
     private HashMap<TextView,CountDownTimer> counters;
     private onClickListener onClick;
     private onPayMoneyListener onSuccess;
-    public BookingCarAdapter(Context context, ArrayList<BookingObject> vehicle) {
+    private int  money;
+
+    public BookingCarAdapter(Context context, ArrayList<BookingObject> vehicle, int money) {
         mContext = context;
         this.mVehicle = vehicle;
         preference = new SharePreference(mContext);
         this.counters = new HashMap<>();
-
+        this.money = money;
     }
 
     @Override
@@ -143,60 +151,68 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                         timeRemaining += "0"+seconds;
 
                     tv.setText(timeRemaining );
-                    holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            price = mVehicle.get(position).getBookPrice();
-                            purchaseTrip(1, position, null);
-
-                        }
-                    });
-                    holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showDialogPurchase(position);
-                        }
-                    });
                 } else {
-                    tv.setText("00:00:00");
-                    holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(mContext, "Đã hết thời gian trả giá",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(mContext, "Đã hết thời gian đấu giá",Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    whoWinDriver(position);
                 }
             }
 
             public void onFinish() {
-                tv.setText("00:00:00");
-                holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(mContext, "Đã hết thời gian trả giá",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(mContext, "Đã hết thời gian đấu giá",Toast.LENGTH_SHORT).show();
-                    }
-                });
+                whoWinDriver(position);
             }
 
         };
         counters.put(tv, cdt);
         cdt.start();
+        holder.btnPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                price = mVehicle.get(position).getBookPrice();
+                if (price > Integer.valueOf(money)){
+                    android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
+                    alert.setTitle("Thông báo");
+                    alert.setMessage("Bạn không đủ tiền mua chuyến này");
+                    alert.setCancelable(false);
+                    alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                    return;
+                }
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
+                alert.setTitle("Thông báo");
+                alert.setMessage("Bạn chắc chắn muốn mua chuyến xe này");
+                alert.setCancelable(false);
+                alert.setNegativeButton("Bỏ qua", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                alert.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        purchaseTrip(1, position, null, null);
+                    }
+                });
+                alert.show();
+
+            }
+        });
+        holder.btnCompetitive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogPurchase(position, tv);
+            }
+        });
+
 
     }
 
-    private void showDialogPurchase(final int position) {
+    private void showDialogPurchase(final int position, final TextView tv) {
         final Dialog dialog = new Dialog(mContext);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -210,17 +226,17 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
 
-        final TextView edtCode  = (TextView) dialog.findViewById(R.id.edt_code);
-        Button btnSet           = (Button) dialog.findViewById(R.id.btn_set);
-        Button btnCancel        = (Button) dialog.findViewById(R.id.btn_cancel);
-        final ArrayList<String> arrPrice =new ArrayList<>();
-        final ArrayList<Integer> realPrice =new ArrayList<>();
+        final TextView edtCode = (TextView) dialog.findViewById(R.id.edt_code);
+        Button btnSet = (Button) dialog.findViewById(R.id.btn_set);
+        Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        final ArrayList<String> arrPrice = new ArrayList<>();
+        final ArrayList<Integer> realPrice = new ArrayList<>();
         int maxPrice = 0;
         if (mVehicle.get(position).getCurrentPrice() == 0)
             maxPrice = mVehicle.get(position).getBookPriceMax();
         else
             maxPrice = mVehicle.get(position).getCurrentPrice();
-        for (int temp = mVehicle.get(position).getBookPrice()+50000; temp < maxPrice ; temp+=50000) {
+        for (int temp = mVehicle.get(position).getBookPrice() + 50000; temp < maxPrice; temp += 50000) {
             arrPrice.add(Utilities.convertCurrency(temp));
             realPrice.add(temp);
         }
@@ -229,7 +245,7 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("Chọn giá")
-                        .setSingleChoiceItems(arrPrice.toArray(new CharSequence[arrPrice.size()]),-1, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(arrPrice.toArray(new CharSequence[arrPrice.size()]), -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 price = realPrice.get(which);
@@ -245,10 +261,27 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         btnSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtCode.getText().toString() == null ||edtCode.getText().toString().equals("") ){
-                    Toast.makeText(mContext, "Bạn chưa trả giá",Toast.LENGTH_SHORT).show();
-                }else
-                    purchaseTrip(0, position, dialog);
+                if (edtCode.getText().toString() == null || edtCode.getText().toString().equals("")) {
+                    Toast.makeText(mContext, "Bạn chưa trả giá", Toast.LENGTH_SHORT).show();
+                } else {
+                    android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
+                    alert.setTitle("Thông báo");
+                    alert.setMessage("Bạn chắc chắn muốn đấu giá chuyến xe này");
+                    alert.setCancelable(false);
+                    alert.setNegativeButton("Bỏ qua", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    alert.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            purchaseTrip(0, position, dialog, tv);
+                        }
+                    });
+                    alert.show();
+                }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -259,11 +292,74 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         });
         dialog.show();
     }
-
-    private void purchaseTrip(final int type, final int position, final Dialog rootDialog) {
+    private void whoWinDriver(final int position) {
         RequestParams params;
         params = new RequestParams();
-        params.put("id_driver",preference.getDriverId());
+        params.put("id_driver", preference.getDriverId());
+        params.put("id_booking", mVehicle.get(position).getId());
+        BaseService.getHttpClient().get(Defines.URL_WHO_WIN, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                // called when response HTTP status is "200 OK"
+                Log.i("JSON", new String(responseBody));
+                if (onSuccess != null)
+                    onSuccess.onSuccess();
+                String result = new String(responseBody);
+                final String phone = result.split("_")[0];
+                int idBooking = Integer.parseInt(result.split("_")[1]);
+                int totalMoney = Integer.parseInt(result.split("_")[2]);
+                for (int i = 0; i < mVehicle.size(); i++) {
+                    if (mVehicle.get(i).getId() == idBooking) {
+                        final DateTime jDateFrom = new DateTime(mVehicle.get(i).getFromDate());
+                        final DateTime jDateTo = new DateTime(mVehicle.get(i).getToDate());
+
+                        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
+                        alert.setTitle("Thông tin chuyến xe đấu giá thành công");
+                        alert.setMessage("Điểm đi: " + mVehicle.get(i).getCarFrom() + "\nĐiểm đến: " +
+                                mVehicle.get(i).getCarTo() +  "\n Ngày giờ đến: " + Utilities.convertTime(jDateFrom) +
+                                "\nNgày giờ về: " + Utilities.convertTime(jDateTo) +
+                                "\nSố tiền còn lại trong tài khoản: "+ totalMoney +
+                                "\nSố điện thoại của hành khách: "+ phone);
+                        alert.setCancelable(false);
+                        alert.setPositiveButton("Gọi ngay cho hành khách", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (Build.VERSION.SDK_INT >= 22) {
+                                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CALL_PHONE}, Defines.REQUEST_CODE_TELEPHONE_PERMISSIONS);
+                                        return;
+                                    }
+                                }
+                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                callIntent.setData(Uri.parse("tel:" + phone));
+                                mContext.startActivity(callIntent);
+                            }
+                        });
+                        alert.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+            }
+        });
+    }
+
+    private void purchaseTrip(final int type, final int position, final Dialog rootDialog, final TextView tv) {
+        RequestParams params;
+        params = new RequestParams();
+        params.put("id_driver", preference.getDriverId());
         params.put("driver_number", preference.getCarNumber());
         params.put("driver_phone", preference.getPhone());
         params.put("price", price);
@@ -272,9 +368,9 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
         final ProgressDialog dialog = new ProgressDialog(mContext);
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
-        if (type == 0){
+        if (type == 0) {
             dialog.setMessage("Đang đấu giá...");
-        }else
+        } else
             dialog.setMessage("Đang trả giá...");
         dialog.show();
         BaseService.getHttpClient().post(Defines.URL_BOOKING_FINAL, params, new AsyncHttpResponseHandler() {
@@ -290,19 +386,27 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                 Log.i("JSON", new String(responseBody));
                 int result = Integer.valueOf(new String(responseBody));
                 if (result > 0)
-                    if (type == 0){
-                        Toast.makeText(mContext, "Đã đấu giá thành công",Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
+                if (type == 0) {
+                    Toast.makeText(mContext, "Đã đấu giá thành công, xin chờ kết quả sau khi hết phiên đấu giá này", Toast.LENGTH_SHORT).show();
+                    Handler handlerRun = new Handler();
+                    handlerRun.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            whoWinDriver(position);
+                        }
+                    }, Utilities.changeTimeFromStringToInt(tv.getText().toString()));
+                } else {
+                    Toast.makeText(mContext, "Đã mua thành công", Toast.LENGTH_SHORT).show();
+                    whoWinDriver(position);
+                }
 
-                    }else {
-                        Toast.makeText(mContext, "Đã mua thành công", Toast.LENGTH_SHORT).show();
-                        payMoney( mVehicle.get(position).getId());
-                    }
-                    if (rootDialog != null)
-                        rootDialog.dismiss();
-                    if (onClick !=null)
-                        onClick.onItemClick();
+                if (rootDialog != null)
+                    rootDialog.dismiss();
+                if (onClick != null)
+                    onClick.onItemClick();
                 else
-                    Toast.makeText(mContext, "Giao dịch thất bại",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Giao dịch thất bại", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
 

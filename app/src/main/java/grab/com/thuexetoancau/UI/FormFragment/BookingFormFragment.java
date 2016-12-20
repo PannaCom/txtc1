@@ -675,6 +675,7 @@ public class BookingFormFragment extends Fragment {
         final DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.datepicker);
         datePicker.setMinDate(System.currentTimeMillis() - 1000);
         final  TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.timepicker);
+
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int mHour, int mMinute) {
@@ -685,29 +686,26 @@ public class BookingFormFragment extends Fragment {
                 int hour = now.get(Calendar.HOUR_OF_DAY);
                 int minutes = now.get(Calendar.MINUTE);
                 if (datePicker.getYear() == year && datePicker.getMonth() == month && datePicker.getDayOfMonth() == day ){
-                    if (mHour < hour) {
+                    if (mHour <= hour) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            timePicker.setHour(hour);
+                            timePicker.setHour(hour+1);
                             timePicker.setMinute(minutes);
                         }else {
-                            timePicker.setCurrentHour(hour);
+                            timePicker.setCurrentHour(hour+1);
                             timePicker.setCurrentMinute(minutes);
                         }
 
-                    }else if (mHour == hour){
-                        if (mMinute < minutes){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                timePicker.setMinute(minutes);
-                            }else {
-                                timePicker.setCurrentMinute(minutes);
-                            }
-                        }
                     }
                 }
             }
         });
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
+        }else {
+            timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
+        }
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
 
             @Override
@@ -720,10 +718,10 @@ public class BookingFormFragment extends Fragment {
                 int minutes = now.get(Calendar.MINUTE);
                 if (cYear == year && cMonth == month && cDay == dayOfMonth ) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        timePicker.setHour(hour);
+                        timePicker.setHour(hour+1);
                         timePicker.setMinute(minutes);
                     }else {
-                        timePicker.setCurrentHour(hour);
+                        timePicker.setCurrentHour(hour+1);
                         timePicker.setCurrentMinute(minutes);
                     }
                 }

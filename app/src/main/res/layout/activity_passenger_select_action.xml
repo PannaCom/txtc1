@@ -51,7 +51,7 @@
             android:id="@+id/btn_booking" />
 
         <Button
-            android:text="Xem thông tin"
+            android:text="Mời xem chuyến Đi chung/Chiều về"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/click_confirm"
