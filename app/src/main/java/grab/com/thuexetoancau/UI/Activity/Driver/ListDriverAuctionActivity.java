@@ -1,11 +1,16 @@
 package grab.com.thuexetoancau.UI.Activity.Driver;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -110,6 +115,10 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                                 Intent intent = new Intent(mContext, EditDriverActivity.class);
                                 startActivity(intent);
                                 return true;
+                            case R.id.action_list_driver:
+                                Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
+                                startActivity(intentList);
+                                return true;
                         }
                         return false;
                     }
@@ -140,10 +149,15 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         } else
             showOffline();
 
-
+        if (Build.VERSION.SDK_INT >= 22) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CALL_PHONE}, Defines.REQUEST_CODE_TELEPHONE_PERMISSIONS);
+                return;
+            }
+        }
     }
     public void newDriverCar(View v) {
-        Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
+        Intent intentList = new Intent(mContext, NewCarAuctionsActivity.class);
         startActivity(intentList);
     }
     private void getCurrentAccount() {

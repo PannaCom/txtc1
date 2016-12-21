@@ -76,13 +76,14 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
         holder.txtDateFrom.setText(Utilities.convertTime(jDateFrom));
         DateTime jDateTo = new DateTime(mVehicle.get(position).getToDate());
         holder.txtDateTo.setText(Utilities.convertTime(jDateTo));
-        holder.txtBookPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getBookPrice())+" Đ");
-        if (mVehicle.get(position).getCurrentPrice() == 0)
-            holder.txtMaxPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getBookPriceMax())+" Đ");
-        else
-            holder.txtMaxPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getCurrentPrice())+" Đ");
+        holder.txtBookPrice.setText(Utilities.convertCurrency(mVehicle.get(position).getBookPriceMax())+" Đ");
      //   holder.txtTimeReduce.setText(mVehicle.get(position).getTimeToReduce());
-        holder.txtCarSize.setText(mVehicle.get(position).getCarType());
+        if (mVehicle.get(position).getCarType().equals("4"))
+            holder.txtCarSize.setText(mVehicle.get(position).getCarType()+" chỗ(giá siêu rẻ, không cốp)");
+        else if (mVehicle.get(position).getCarType().equals("5"))
+            holder.txtCarSize.setText(mVehicle.get(position).getCarType()+" chỗ(có cốp)");
+        else
+            holder.txtCarSize.setText(mVehicle.get(position).getCarType()+" chỗ");
         holder.btnBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,7 +175,6 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
         TextView txtDateFrom;
         TextView txtDateTo;
         TextView txtBookPrice;
-        TextView txtMaxPrice;
         TextView txtCarSize;
         Button btnBooking;
 
@@ -188,8 +188,7 @@ public class PassengerCarAdapter extends RecyclerView.Adapter<PassengerCarAdapte
             txtHireType     = (TextView)        itemView.findViewById(R.id.txt_hire_type);
             txtDateFrom     = (TextView)        itemView.findViewById(R.id.txt_date_from);
             txtDateTo       = (TextView)        itemView.findViewById(R.id.txt_date_to);
-            txtBookPrice    = (TextView)        itemView.findViewById(R.id.txt_book_price);
-            txtMaxPrice     = (TextView)        itemView.findViewById(R.id.txt_book_price_max);
+            txtBookPrice    = (TextView)        itemView.findViewById(R.id.txt_price);
             txtCarSize      = (TextView)        itemView.findViewById(R.id.txt_car_size);
             btnBooking      = (Button)          itemView.findViewById(R.id.btn_booking);
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ThueXeToanCau</string>
+    <string name="app_name">Thuê xe toàn cầu</string>
     <string name="title_activity_register_driver">RegisterDriverActivity</string>
     <string-array name="move_array">
         <item>Thành phố đi sân bay</item>

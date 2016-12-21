@@ -6,4 +6,8 @@
         android:id="@+id/action_edit"
         android:title="Sửa thông tin"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_list_driver"
+        android:title="Danh sách đi chung/chiều về"
+        app:showAsAction="never" />
 </menu>

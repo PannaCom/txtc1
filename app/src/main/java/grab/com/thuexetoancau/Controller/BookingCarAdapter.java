@@ -167,7 +167,12 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
             @Override
             public void onClick(View view) {
                 price = mVehicle.get(position).getBookPrice();
-                if (price > Integer.valueOf(money)){
+                int maxPrice = 0;
+                if (mVehicle.get(position).getCurrentPrice() == 0)
+                    maxPrice = mVehicle.get(position).getBookPriceMax();
+                else
+                    maxPrice = mVehicle.get(position).getCurrentPrice();
+                if ( (maxPrice- mVehicle.get(position).getBookPrice()) > Integer.valueOf(money)){
                     android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
                     alert.setTitle("Thông báo");
                     alert.setMessage("Bạn không đủ tiền mua chuyến này");
@@ -264,6 +269,21 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                 if (edtCode.getText().toString() == null || edtCode.getText().toString().equals("")) {
                     Toast.makeText(mContext, "Bạn chưa trả giá", Toast.LENGTH_SHORT).show();
                 } else {
+                    if ( (price - mVehicle.get(position).getBookPrice()) > Integer.valueOf(money)){
+                        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
+                        alert.setTitle("Thông báo");
+                        alert.setMessage("Bạn không đủ tiền mua chuyến này");
+                        alert.setCancelable(false);
+                        alert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        alert.show();
+                        return;
+                    }
                     android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(mContext);
                     alert.setTitle("Thông báo");
                     alert.setMessage("Bạn chắc chắn muốn đấu giá chuyến xe này");
@@ -425,40 +445,6 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
             }
         });
     }
-
-    private void payMoney(int id_booking) {
-        RequestParams params;
-        params = new RequestParams();
-        params.put("id_driver",preference.getDriverId());
-        params.put("id_booking",id_booking);
-        BaseService.getHttpClient().post(Defines.URL_CONFIRM, params, new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
-                if (onSuccess != null)
-                    onSuccess.onSuccess();
-            }
-
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
-                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
     public void setOnRequestComplete(final onClickListener onClick)
     {
         this.onClick = onClick;

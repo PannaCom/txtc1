@@ -82,10 +82,40 @@ public class PassengerBookingAdapter extends RecyclerView.Adapter<PassengerBooki
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + mVehicle.get(position).getPhone()));
                 mContext.startActivity(intent);
-                //bookingFinal(position);
+                payMoney(position);
             }
         });
     }
+    private void payMoney(int id_booking) {
+        RequestParams params;
+        params = new RequestParams();
+        params.put("id_driver",preference.getDriverId());
+        params.put("id_booking",id_booking);
+        BaseService.getHttpClient().post(Defines.URL_CONFIRM, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
   /*  private void bookingFinal(int position) {
         RequestParams params = new RequestParams();
         params.put("id_driver",preference.getDriverId());

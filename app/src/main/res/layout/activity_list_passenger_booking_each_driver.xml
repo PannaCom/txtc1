@@ -55,16 +55,5 @@
         android:visibility="gone"
         android:layout_gravity="center"
         android:id="@+id/txt_no_result" />
-    <android.support.design.widget.FloatingActionButton
-        app:backgroundTint="@color/blue"
-        app:fabSize="normal"
-        android:layout_gravity="left|bottom"
-        android:scaleType="center"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:onClick="list_passenger_booking_listener"
-        android:layout_width="wrap_content"
-        android:id="@+id/btn_book_now"
-        android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>
