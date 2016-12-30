@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import grab.com.thuexetoancau.Controller.BookingCarAdapter;
 import grab.com.thuexetoancau.Model.BookingObject;
 import grab.com.thuexetoancau.R;
+import grab.com.thuexetoancau.UI.Activity.Passenger.FormPassengerBookingActivity;
 import grab.com.thuexetoancau.Utilities.BaseService;
 import grab.com.thuexetoancau.Utilities.Constants;
 import grab.com.thuexetoancau.Utilities.Defines;
@@ -62,13 +65,16 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
     private GPSTracker mLocation;
     private ImageView imgMenu;
     private boolean doubleBackToExitPressedOnce = false;
-    private TextView txtAccount;
+    private TextView txtAccount, txtStatus;
+    private FrameLayout layoutStatus;
     private int money;
+    private SharePreference preference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_driver_auction);
         mContext = this;
+        preference = new SharePreference(this);
         initComponents();
     }
     private void initComponents() {
@@ -78,7 +84,30 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         ImageView btnBack           =   (ImageView)             findViewById(R.id.btn_back);
         imgMenu                     =   (ImageView)             findViewById(R.id.img_menu);
         txtAccount                  =   (TextView)              findViewById(R.id.txt_account);
+        txtStatus                   =   (TextView)              findViewById(R.id.txt_status);
+        layoutStatus                =   (FrameLayout)           findViewById(R.id.layout_status);
+        if (preference.getStatus() == 1){
+            txtStatus.setText("Ngoại tuyến");
+            layoutStatus.setBackgroundColor(getResources().getColor(R.color.md_red_600));
+        }else{
+            txtStatus.setText("Trực tuyến");
+            layoutStatus.setBackgroundColor(getResources().getColor(R.color.green_1));
+        }
 
+        layoutStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (preference.getStatus() == 0){
+                    preference.saveStatus(1);
+                    txtStatus.setText("Ngoại tuyến");
+                    layoutStatus.setBackgroundColor(getResources().getColor(R.color.md_red_600));
+                }else{
+                    preference.saveStatus(0);
+                    txtStatus.setText("Trực tuyến");
+                    layoutStatus.setBackgroundColor(getResources().getColor(R.color.green_1));
+                }
+            }
+        });
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +148,14 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                                 Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
                                 startActivity(intentList);
                                 return true;
+                            case R.id.action_post_drive:
+                                Intent intentPost = new Intent(mContext, GetInforDriverBookingActivity.class);
+                                startActivity(intentPost);
+                                return true;
+                            case R.id.action_list_auction:
+                                Intent intentAuction = new Intent(mContext, ListAuctionSuccessActivity.class);
+                                startActivity(intentAuction);
+                                return true;
                         }
                         return false;
                     }
@@ -132,30 +169,93 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                 getBooking();
             }
         });
-        // set cardview
-        vehicleView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(mContext);
-        vehicleView.setLayoutManager(llm);
-        if (Utilities.isOnline(mContext)) {
-            getCurrentAccount();
-            mLocation = new GPSTracker(this);
-            if (mLocation.handlePermissionsAndGetLocation()) {
-                if (!mLocation.canGetLocation()) {
-                    settingRequestTurnOnLocation();
-                } else {
-                    dummyData();
-                }
-            }
-        } else
-            showOffline();
 
-        if (Build.VERSION.SDK_INT >= 22) {
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CALL_PHONE}, Defines.REQUEST_CODE_TELEPHONE_PERMISSIONS);
-                return;
+        checkValidAccount();
+
+    }
+
+    private void checkValidAccount() {
+        SharePreference preference = new SharePreference(this);
+        RequestParams params;
+        params = new RequestParams();
+        params.put("phone", preference.getPhone());
+        Log.e("TAG",params.toString());
+        BaseService.getHttpClient().post(Defines.URL_GET_STATUS_DRIVER, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
             }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                // called when response HTTP status is "200 OK"
+                int status = Integer.valueOf(new String(responseBody));
+               if (status == -1){
+                   showDialogInValidAccount();
+               }else{
+                   // set cardview
+                   vehicleView.setHasFixedSize(true);
+                   LinearLayoutManager llm = new LinearLayoutManager(mContext);
+                   vehicleView.setLayoutManager(llm);
+                   if (Utilities.isOnline(mContext)) {
+                       if (Build.VERSION.SDK_INT >= 22) {
+                           if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                               ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CALL_PHONE}, Defines.REQUEST_CODE_TELEPHONE_PERMISSIONS);
+                           }else{
+                               getCurrentAccount();
+                               mLocation = new GPSTracker(mContext);
+                               if (mLocation.handlePermissionsAndGetLocation()) {
+                                   if (!mLocation.canGetLocation()) {
+                                       settingRequestTurnOnLocation();
+                                   } else {
+                                       dummyData();
+                                   }
+                               }
+                           }
+                       }
+                   } else
+                       showOffline();
+               }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+                //Toast.makeText(getContext(), getResources().getString(R.string.check_network), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void showDialogInValidAccount() {
+        new AlertDialog.Builder(this)
+                .setTitle("Thông báo")
+                .setMessage("Tài khoản của bạn đã bị hạn chế quyền sử dụng, vui lòng liên hệ với công ty để được hỗ trợ")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void sendGPSDriver() {
+        if (!Defines.startThread) {
+            Thread t = new Thread(new sendLocate());
+            t.start();
+            Defines.startThread = true;
         }
     }
+
     public void newDriverCar(View v) {
         Intent intentList = new Intent(mContext, NewCarAuctionsActivity.class);
         startActivity(intentList);
@@ -240,19 +340,35 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
             dialog.show();
             longitude = mLocation.getLongitude();
             latitude = mLocation.getLatitude();
-
+            sendGPSDriver();
             getBooking();
         }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constants.REQUEST_CODE_LOCATION_PERMISSIONS) {
+        if (requestCode == Defines.REQUEST_CODE_TELEPHONE_PERMISSIONS) {
+            getCurrentAccount();
+            mLocation = new GPSTracker(this);
+            if (mLocation.handlePermissionsAndGetLocation()) {
+                if (!mLocation.canGetLocation()) {
+                    settingRequestTurnOnLocation();
+                } else {
+                    dummyData();
+                }
+            }
+        }else if (requestCode == Constants.REQUEST_CODE_LOCATION_PERMISSIONS && grantResults[0] == 0) {
             dummyData();
         }
     }
     private void getBooking() {
         vehicles = new ArrayList<>();
+        if (dialog == null){
+            dialog = new ProgressDialog(mContext);
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+        }
         dialog.setMessage("Đang tải dữ liệu");
         RequestParams params;
         params = new RequestParams();
@@ -337,7 +453,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         adapter.setOnRequestComplete(new BookingCarAdapter.onClickListener() {
             @Override
             public void onItemClick() {
-                dummyData();
+                getBooking();
             }
         });
         adapter.setOnPaySuccess(new BookingCarAdapter.onPayMoneyListener() {
@@ -447,5 +563,56 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
     private void showOffline() {
         txtNoResult.setVisibility(View.VISIBLE);
         txtNoResult.setText("Không có kết nối mạng");
+    }
+    private class sendLocate implements Runnable {
+        public void run() {
+            try {
+                while (true) {
+                    if (preference.getStatus() ==0) {
+                        Log.e("TAG", "loop");
+                        sendLocationToServer();
+                        Thread.sleep(Defines.LOOP_TIME);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void sendLocationToServer() {
+        RequestParams params;
+        params = new RequestParams();
+        params.put("car_number", preference.getCarNumber());
+        params.put("phone", preference.getPhone());
+        params.put("lon", longitude);
+        params.put("lat", latitude);
+        params.put("status", 0);
+        Log.i("params deleteDelivery", params.toString());
+        BaseService.getHttpClient().post(Defines.URL_POST_DRIVER_GPS, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                // called when response HTTP status is "200 OK"
+                Log.i("JSON", new String(responseBody));
+                //parseJsonResult(new String(responseBody));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                Log.i("JSON", new String(responseBody));
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+            }
+        });
     }
 }

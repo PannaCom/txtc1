@@ -30,6 +30,10 @@ public class Defines {
     public static  final String     URL_GET_MONEY_DRIVER        = HOSTNAME + "api/getMoneyDriver";
     public static  final String     URL_CONFIRM                 = HOSTNAME + "api/confirm";
     public static  final String     URL_WHO_WIN                 = HOSTNAME + "api/whoWin";
+    public static  final String     URL_POST_DRIVER_GPS         = HOSTNAME + "api/postDriverGPS";
+    public static  final String     URL_GET_CAR_AROUND          = HOSTNAME + "api/getaround";
+    public static  final String     URL_GET_STATUS_DRIVER       = HOSTNAME + "api/getStatusDriver";
+    public static  final String     URL_BOOKING_SUCCESS         = HOSTNAME + "api/getBookingSuccess";
 
     public static  final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 123;
     public static  final int REQUEST_CODE_LOCATION_PERMISSIONS = 234;

@@ -44,28 +44,53 @@
         android:layout_height="50dp"
         android:layout_below="@+id/toolbar"
         android:id="@+id/layout_money"
-
+        android:weightSum="1"
         android:background="@color/colorPrimary"
         android:gravity="center_vertical">
 
-        <TextView
-            android:text="Tài khoản có : "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView16"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginLeft="10dp" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="0.75"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_account"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            <TextView
+                android:text="Tài khoản có : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_account"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_status"
+            android:background="@color/green_1"
+            android:layout_weight="0.25">
+
+            <TextView
+                android:text="Trực tuyến"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:id="@+id/txt_status" />
+        </FrameLayout>
+
     </LinearLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -109,7 +134,7 @@
             android:onClick="newDriverCar">
 
             <TextView
-                android:text="Đăng chuyến xe chiều về/đi chung"
+                android:text="Đăng chuyến tìm khách đi chung/chiều về"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="16sp"

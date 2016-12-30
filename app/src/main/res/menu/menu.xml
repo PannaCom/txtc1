@@ -10,4 +10,13 @@
         android:id="@+id/action_list_driver"
         android:title="Danh sách đi chung/chiều về"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_list_auction"
+        android:title="Danh sách đấu giá thành công"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_post_drive"
+        android:title=" Đăng chuyến thừa khách"
+        app:showAsAction="never" />
+
 </menu>

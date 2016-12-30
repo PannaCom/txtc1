@@ -105,7 +105,7 @@ public class BookingResultActivity extends AppCompatActivity {
 
 
         txtName.setText(preference.getName());
-        txtPhone.setText(preference.getPhone());
+        txtPhone.setText(result.get(8));
         txtFrom.setText(result.get(0));
         txtTo.setText(result.get(1));
         txtCarSize.setText(result.get(2));

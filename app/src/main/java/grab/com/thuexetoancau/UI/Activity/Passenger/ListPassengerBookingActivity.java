@@ -77,8 +77,8 @@ public class ListPassengerBookingActivity extends AppCompatActivity implements L
         requestPermission();
 
     }
-    public void updateMap(onMapRefresh dataRefresh){
-        this.mapRefresh = dataRefresh;
+    public void updateMap(onMapRefresh mapRefresh){
+        this.mapRefresh = mapRefresh;
 
     }
     private void setupTabIcons() {
@@ -136,11 +136,15 @@ public class ListPassengerBookingActivity extends AppCompatActivity implements L
                     dialog.show();
                     if (dataRefresh!= null)
                         dataRefresh.onLocationSuccess(dialog);
+                    if (mapRefresh!= null)
+                        mapRefresh.onLocationSuccess();
                 }
             }
         }else {
             if (dataRefresh != null)
                 dataRefresh.onOffline();
+            if (mapRefresh!= null)
+                mapRefresh.onOffline();
         }
     }
     @Override
@@ -167,6 +171,8 @@ public class ListPassengerBookingActivity extends AppCompatActivity implements L
                     public void onClick(DialogInterface dialog, int id) {
                         if (dataRefresh!= null)
                             dataRefresh.onLocationFailure();
+                        if (mapRefresh!= null)
+                            mapRefresh.onLocationFailure();
                         dialog.cancel();
                     }
                 });
@@ -183,6 +189,8 @@ public class ListPassengerBookingActivity extends AppCompatActivity implements L
                 if (!mLocation.canGetLocation()) {
                     if (dataRefresh != null)
                         dataRefresh.onLocationFailure();
+                    if (mapRefresh!= null)
+                        mapRefresh.onLocationFailure();
                 }else {
                     final ProgressDialog dialog = new ProgressDialog(mContext);
                     dialog.setIndeterminate(true);
@@ -202,6 +210,8 @@ public class ListPassengerBookingActivity extends AppCompatActivity implements L
 
                         if (dataRefresh != null)
                             dataRefresh.onLocationSuccess(dialog);
+                        if (mapRefresh!= null)
+                            mapRefresh.onLocationSuccess();
                     }
                 }
                 break;

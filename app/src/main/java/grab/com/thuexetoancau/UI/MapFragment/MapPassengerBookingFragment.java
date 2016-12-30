@@ -1,18 +1,21 @@
 package grab.com.thuexetoancau.UI.MapFragment;
 
 import android.app.ProgressDialog;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -23,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import grab.com.thuexetoancau.Model.BookingObject;
@@ -44,14 +48,21 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
     private LatLng curLatLng;
     private ArrayList<Marker> markerList = new ArrayList<>();
     private GPSTracker mLocation;
-
+    private ImageView imgRefresh;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_active_car_fragment, container, false);
         SupportMapFragment map = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        imgRefresh  =   (ImageView) view.findViewById(R.id.img_refresh);
+        imgRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAllMarker();
+                getCarAround();
+            }
+        });
         map.getMapAsync(this);
-
         return view;
     }
 
@@ -66,23 +77,9 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
-        ((ListPassengerBookingActivity) getActivity()).updateMap(new ListPassengerBookingActivity.onMapRefresh() {
-            @Override
-            public void onLocationSuccess() {
-                getBooking();
-            }
-
-            @Override
-            public void onLocationFailure() {
-            }
-
-            @Override
-            public void onOffline() {
-            }
-        });
-
+        getCarAround();
     }
-    private void getBooking() {
+    private void getCarAround() {
         mLocation = new GPSTracker(getActivity());
         dialog = new ProgressDialog(getActivity());
         dialog.setIndeterminate(true);
@@ -100,9 +97,8 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
         params = new RequestParams();
         params.put("lat", latitude);
         params.put("lon", longitude);
-        params.put("order", 1);
         Log.e("TAG",params.toString());
-        BaseService.getHttpClient().post(Defines.URL_GET__BOOKING, params, new AsyncHttpResponseHandler() {
+        BaseService.getHttpClient().post(Defines.URL_GET_CAR_AROUND, params, new AsyncHttpResponseHandler() {
 
             @Override
             public void onStart() {
@@ -143,35 +139,25 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
     }
     private void parseJsonResult(JSONObject jsonobject) {
         try {
-            int id              = jsonobject.getInt("id");
-            String carFrom      = jsonobject.getString("car_from");
-            String carTo        = jsonobject.getString("car_to");
-            String carType      = jsonobject.getString("car_type");
-
-            String carHireType  = jsonobject.getString("car_hire_type");
-            String carWhoHire   = jsonobject.getString("car_who_hire");
-            String fromDate     = jsonobject.getString("from_datetime");
-            String toDate       = jsonobject.getString("to_datetime");
-            String dateBook     = jsonobject.getString("datebook");
-
-            int price           = jsonobject.getInt("book_price");
-            int priceMax        = jsonobject.getInt("book_price_max");
-            int currentPrice = 0;
-            if (!jsonobject.getString("current_price").equals("null"))
-                currentPrice    = jsonobject.getInt("current_price");
-            String timeReduce   = jsonobject.getString("time_to_reduce");
-
-            double lon1         = jsonobject.getDouble("lon1");
-            double lat1         = jsonobject.getDouble("lat1");
-            double lon2         = jsonobject.getDouble("lon2");
-            double lat2         = jsonobject.getDouble("lat2");
-
-            double distance     = jsonobject.getDouble("D");
-
-            BookingObject busInfor = new BookingObject(id, carFrom,carTo,carType,carHireType,carWhoHire,fromDate,toDate,dateBook,price,priceMax,currentPrice, timeReduce, new LatLng(lat1,lon1), new LatLng(lat2, lon2),distance);
-
+            double lon         = jsonobject.getDouble("lon");
+            double lat         = jsonobject.getDouble("lat");
+            double distance    = jsonobject.getDouble("D");
+            DecimalFormat df = new DecimalFormat("#.#");
+            String gap = "";
+            if ((int) distance == 0)
+                gap = df.format(distance*1000) + " m";
+            else
+                gap = df.format(distance) + " km";
+            LatLng aroundLatLon = new LatLng(lon, lat);
+            Marker marker = mMap.addMarker(new MarkerOptions().position(curLatLng).title("Xe cách bạn "+gap));
+            marker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.car_icon));
+            markerList.add(marker);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    private void removeAllMarker(){
+        for (Marker marker : markerList)
+            marker.remove();
     }
 }

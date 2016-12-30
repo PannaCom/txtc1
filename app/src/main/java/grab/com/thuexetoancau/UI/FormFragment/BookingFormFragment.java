@@ -22,10 +22,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -79,6 +81,7 @@ public class BookingFormFragment extends Fragment {
     private SharePreference preference;
     DataPassListener mCallback;
     OnDataResult dResult;
+    private String passengerPhone;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -380,6 +383,12 @@ public class BookingFormFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             String type = aTargetHire.get(which);
+
+                            if (type.equals("Văn phòng xe")){
+                                showDialogInfor();
+                            }else{
+                                passengerPhone = preference.getPhone();
+                            }
                             edtTargetHire.setText(type);
                             dialog.dismiss();
                         }
@@ -389,7 +398,38 @@ public class BookingFormFragment extends Fragment {
         }
     };
 
+    private void showDialogInfor() {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.infor_passenger_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        //This makes the dialog take up the full width
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
 
+        final EditText edtPhone   = (EditText) dialog.findViewById(R.id.edt_passenger_phone);
+        edtPhone.setText(preference.getPhone());
+        Button   btnConfirm = (Button)  dialog.findViewById(R.id.btn_confirm);
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (edtPhone.getText().toString() == null || edtPhone.getText().toString().equals("")){
+                    Toast.makeText(mContext, "Bạn chưa nhập số điện thoại",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                passengerPhone = edtPhone.getText().toString();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
     private AdapterView.OnItemClickListener mAutocompleteFromClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -544,7 +584,10 @@ public class BookingFormFragment extends Fragment {
         params.put("lon2", llTo.longitude);
         params.put("lat2", llTo.latitude);
         params.put("name", preference.getName());
-        params.put("phone", preference.getPhone());
+        if (preference.getRole() == 1)
+            params.put("phone", preference.getTempPhone());
+        else
+            params.put("phone", passengerPhone);
         if (edtHireType.getText().toString().equals("Sân bay")) {
             params.put("airport_name", autoPlaceFrom.getText().toString());
             params.put("airport_way", autoPlaceTo.getText().toString());
@@ -583,6 +626,11 @@ public class BookingFormFragment extends Fragment {
                 Log.i("JSON", new String(responseBody));
                 String x = new String(responseBody);
                 result.add(x);
+                if (preference.getRole() == 1)
+                    result.add(preference.getTempPhone());
+                else
+                    result.add(passengerPhone);
+
                 dResult.onResult(result);
                 dialog.dismiss();
             }

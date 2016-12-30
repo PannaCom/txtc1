@@ -12,9 +12,11 @@ public class SharePreference {
     private String PHONE        = "phone";
     private String THE_FIRST    = "the_first";
     private String TOKEN        = "token";
-    private String DRIVER_ID = "driver id";
-    private String ROLE = "role";
-    private String CAR_NUMBER = "car number";
+    private String DRIVER_ID    = "driver id";
+    private String ROLE         = "role";
+    private String CAR_NUMBER   = "car number";
+    private String STATUS       = "status";
+    private String TEMP_PHONE   = "temp phone";
     // constructor
     public SharePreference(Context activity) {
         this.activity = activity;
@@ -91,4 +93,25 @@ public class SharePreference {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
         return sp.getString(CAR_NUMBER,"");
     }
+    public void saveStatus(int status) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(STATUS, status);
+        editor.apply();
+    }
+    public int getStatus() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+        return sp.getInt(STATUS,0);
+    }
+    public void saveTempPhone(String phone) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(TEMP_PHONE, phone);
+        editor.apply();
+    }
+    public String getTempPhone() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+        return sp.getString(TEMP_PHONE, "");
+    }
+
 }
