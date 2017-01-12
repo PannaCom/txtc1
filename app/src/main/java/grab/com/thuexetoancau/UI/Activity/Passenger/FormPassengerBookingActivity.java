@@ -1,7 +1,10 @@
 package grab.com.thuexetoancau.UI.Activity.Passenger;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +29,9 @@ import grab.com.thuexetoancau.Controller.PlaceArrayAdapter;
 import grab.com.thuexetoancau.R;
 import grab.com.thuexetoancau.UI.FormFragment.BookingFormFragment;
 import grab.com.thuexetoancau.UI.MapFragment.MapCarActiveFragment;
+import grab.com.thuexetoancau.Utilities.Constants;
+import grab.com.thuexetoancau.Utilities.GPSTracker;
+import grab.com.thuexetoancau.Utilities.Utilities;
 
 public class FormPassengerBookingActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,BookingFormFragment.DataPassListener, BookingFormFragment.OnDataResult {
     private static final String LOG_TAG = "FormPassengerBookingActivity";
@@ -42,6 +48,7 @@ public class FormPassengerBookingActivity extends AppCompatActivity implements G
             R.mipmap.roster,
             R.mipmap.maps
     };
+    private GPSTracker mLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +82,6 @@ public class FormPassengerBookingActivity extends AppCompatActivity implements G
                 finish();
             }
         });
-
     }
 
     private void setupTabIcons() {
@@ -91,13 +97,91 @@ public class FormPassengerBookingActivity extends AppCompatActivity implements G
         adapter.addFrag(new MapCarActiveFragment(), "Bản đồ");
         viewPager.setAdapter(adapter);
     }
+
+    private void requestPermission(){
+        if (Utilities.isOnline(mContext)) {
+            mLocation = new GPSTracker(this);
+            if (mLocation.handlePermissionsAndGetLocation()) {
+                if (!mLocation.canGetLocation()) {
+                    settingRequestTurnOnLocation();
+                } else {
+                    ProgressDialog dialog = new ProgressDialog(mContext);
+                    dialog.setIndeterminate(true);
+                    dialog.setCancelable(false);
+                    dialog.setMessage("Đang lấy vị trí...");
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                    if (onMap!= null)
+                        onMap.OnDataLocation(dialog);
+                }
+            }
+        }
+    }
     public void updateApi(OnConnected listener) {
         connected = listener;
     }
     public void updateMap( OnDataMap listener) {
         onMap = listener;
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constants.REQUEST_CODE_LOCATION_PERMISSIONS) {
+            requestPermission();
+        }
+    }
+    private void settingRequestTurnOnLocation() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Thông báo");  // GPS not found
+        alertDialogBuilder.setMessage("Chức năng này cần lấy vị trí hiện tại của bạn.Bạn có muốn bật định vị?")
+                .setCancelable(false)
+                .setPositiveButton("Tiếp tục",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(callGPSSettingIntent,1000);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Không",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1000:
+                mLocation = new GPSTracker(this);
+                if (!mLocation.canGetLocation()) {
 
+                }else {
+                    final ProgressDialog dialog = new ProgressDialog(mContext);
+                    dialog.setIndeterminate(true);
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setMessage("Đang lấy vị trí...");
+                    dialog.show();
+                    if (mLocation.getLongitude() == 0 && mLocation.getLatitude() == 0) {
+                        mLocation.getLocationCoodinate(new GPSTracker.LocateListener() {
+                            @Override
+                            public void onLocate(double mlongitude, double mlatitude) {
+                                if (onMap!= null)
+                                    onMap.OnDataLocation(dialog);
+                            }
+                        });
+                    } else {
+                        if (onMap!= null)
+                            onMap.OnDataLocation(dialog);
+                    }
+                }
+                break;
+        }
+    }
 
 
     @Override
@@ -107,12 +191,13 @@ public class FormPassengerBookingActivity extends AppCompatActivity implements G
         //Log.i(LOG_TAG, "Google Places API connected.");
         if (connected != null)
             connected.onConnected(mGoogleApiClient, mPlaceArrayFromAdapter, mPlaceToArrayAdapter);
+        requestPermission();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-        Toast.makeText(this, "Google Places API connection failed with error code:" + connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this,  "Vui lòng kiểm tra lại kết nối", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -170,5 +255,6 @@ public class FormPassengerBookingActivity extends AppCompatActivity implements G
     }
     public interface OnDataMap {
         public void OnDataMap(String location, LatLng latLng);
+        public void OnDataLocation(ProgressDialog dialog);
     }
 }

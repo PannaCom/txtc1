@@ -119,16 +119,32 @@
         android:id="@+id/txt_no_result" />
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:weightSum="1"
-        android:background="@color/green"
         android:layout_alignParentBottom="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/click_booking"
+            android:gravity="center"
+            android:onClick="tradeCustomerCar">
+
+            <TextView
+                android:text="Đăng chuyến thừa khách"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:background="@drawable/click_new_car"
             android:gravity="center"
             android:onClick="newDriverCar">
@@ -144,7 +160,6 @@
                 android:gravity="center"
                 android:layout_weight="1" />
         </LinearLayout>
-
     </LinearLayout>
 
 

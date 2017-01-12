@@ -1,19 +1,37 @@
 package grab.com.thuexetoancau.UI.FormFragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -24,6 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import grab.com.thuexetoancau.Controller.PassengerCarAdapter;
+import grab.com.thuexetoancau.Controller.PlaceArrayAdapter;
 import grab.com.thuexetoancau.Model.BookingObject;
 import grab.com.thuexetoancau.R;
 import grab.com.thuexetoancau.UI.Activity.Passenger.ListPassengerBookingActivity;
@@ -44,20 +63,24 @@ public class ListPassengerBookingFragment extends Fragment {
     private SwipeRefreshLayout swipeToRefresh;
     private ProgressDialog dialog;
     private GPSTracker mLocation;
+    private FloatingActionButton btnFilter;
     private CheckLocationListener mCallback;
+    private GoogleApiClient mGoogleApiClient;
+    private PlaceArrayAdapter mPlaceArrayFromAdapter , mPlaceToArrayAdapter;
+    private AutoCompleteTextView autoPlaceFrom, autoPlaceTo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.get_passenger_booking_fragment, container, false);
         vehicleView                 =   (RecyclerView)          view.findViewById(R.id.vehicle_view);
         txtNoResult                 =   (TextView)              view.findViewById(R.id.txt_no_result);
         swipeToRefresh              =   (SwipeRefreshLayout)    view.findViewById(R.id.swipe_view);
-        initComponents();
+        btnFilter                   =   (FloatingActionButton)  view.findViewById(R.id.btn_filter);
 
         ((ListPassengerBookingActivity) getActivity()).updateRefresh(new ListPassengerBookingActivity.onDataRefresh() {
             @Override
             public void onLocationSuccess(ProgressDialog mdialog) {
                 dialog = mdialog;
-                getBooking();
+                getBooking("","");
             }
 
             @Override
@@ -71,36 +94,214 @@ public class ListPassengerBookingFragment extends Fragment {
                 showOffline("Không có kết nối mạng");
             }
         });
+        ((ListPassengerBookingActivity) getActivity()).updateApi(new ListPassengerBookingActivity.OnConnected() {
+            @Override
+            public void onConnected(GoogleApiClient googleApiClient, PlaceArrayAdapter placeFrom, PlaceArrayAdapter placeTo) {
+                mPlaceArrayFromAdapter = placeFrom;
+                mPlaceToArrayAdapter = placeTo;
+                mGoogleApiClient = googleApiClient;
+                initComponents();
+            }
+        });
         return view;
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (mCallback!= null)
+            mCallback.onChecking();
     }
     private void initComponents() {
 
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mCallback.onChecking();
+                if (mCallback!= null)
+                    mCallback.onChecking();
             }
         });
         // set cardview
         vehicleView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         vehicleView.setLayoutManager(llm);
+
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSheetFilter();
+            }
+        });
     }
 
-    private void getBooking() {
+    private void showSheetFilter() {
+        final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(),R.style.BottomSheetDialog);
+        View sheetView = getActivity().getLayoutInflater().inflate(R.layout.filter_passenger_driver, null);
+        mBottomSheetDialog.setContentView(sheetView);
+
+        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) sheetView.getParent());
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        autoPlaceFrom = (AutoCompleteTextView) sheetView.findViewById(R.id.auto_place_from);
+        autoPlaceFrom.setThreshold(1);
+        autoPlaceFrom.setOnItemClickListener(mAutocompleteFromClickListener);
+        autoPlaceFrom.setAdapter(mPlaceArrayFromAdapter);
+
+        autoPlaceTo = (AutoCompleteTextView) sheetView.findViewById(R.id.auto_place_to);
+        autoPlaceTo.setThreshold(1);
+        autoPlaceTo.setOnItemClickListener(mAutocompleteToClickListener);
+        autoPlaceTo.setAdapter(mPlaceToArrayAdapter);
+
+        final ImageView imgFrom         = (ImageView) sheetView.findViewById(R.id.img_from);
+        final ImageView imgTo           = (ImageView) sheetView.findViewById(R.id.img_to);
+
+
+        imgFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoPlaceFrom.setText("");
+                imgFrom.setVisibility(View.GONE);
+                autoPlaceFrom.setFocusable(true);
+                autoPlaceFrom.setFocusableInTouchMode(true);
+            }
+        });
+        imgTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoPlaceTo.setText("");
+                imgTo.setVisibility(View.GONE);
+
+                autoPlaceTo.setFocusable(true);
+                autoPlaceTo.setFocusableInTouchMode(true);
+            }
+        });
+        autoPlaceFrom.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (i2 >0) {
+                    imgFrom.setVisibility(View.VISIBLE);
+                }else
+                    imgFrom.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        autoPlaceTo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (i2 >0) {
+                    imgTo.setVisibility(View.VISIBLE);
+                }else
+                    imgTo.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        Button btnConfirm      = (Button)          sheetView.findViewById(R.id.btn_confirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getBooking(autoPlaceFrom.getText().toString(), autoPlaceTo.getText().toString());
+                mBottomSheetDialog.dismiss();
+            }
+        });
+        mBottomSheetDialog.show();
+    }
+    private AdapterView.OnItemClickListener mAutocompleteFromClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //hideSoftKeyboard(getActivity());
+            final PlaceArrayAdapter.PlaceAutocomplete item = mPlaceArrayFromAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsFromCallback);
+            //Log.i(LOG_TAG, "Fetching details for ID: " + item.placeId);
+        }
+    };
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsFromCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                //Log.e(LOG_TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                return;
+            }
+            // Selecting the first object buffer.
+            final Place place = places.get(0);
+            CharSequence attributions = places.getAttributions();
+            autoPlaceFrom.setSelection(0);
+
+            autoPlaceFrom.setFocusable(false);
+            autoPlaceFrom.setFocusableInTouchMode(false);
+
+        }
+    };
+    private AdapterView.OnItemClickListener mAutocompleteToClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //hideSoftKeyboard(getActivity());
+            final PlaceArrayAdapter.PlaceAutocomplete item = mPlaceToArrayAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsToCallback);
+
+        }
+    };
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsToCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                return;
+            }
+            // Selecting the first object buffer.
+            final Place place = places.get(0);
+            CharSequence attributions = places.getAttributions();
+            autoPlaceTo.setSelection(0);
+            autoPlaceTo.setFocusable(false);
+            autoPlaceTo.setFocusableInTouchMode(false);
+
+        }
+    };
+    public static void hideSoftKeyboard(Activity activity) {
+
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isAcceptingText())
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+    private void getBooking(final String llFrom, final String llTo) {
         mLocation = new GPSTracker(getActivity());
         longitude = mLocation.getLongitude();
         latitude = mLocation.getLatitude();
         vehicles = new ArrayList<>();
+        if (!dialog.isShowing()){
+            dialog = new ProgressDialog(getActivity());
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
+            dialog.setMessage("Đang tải dữ liệu");
+            dialog.show();
+        }
         dialog.setMessage("Đang tải dữ liệu");
+
         RequestParams params;
         params = new RequestParams();
         params.put("lat", latitude);
         params.put("lon", longitude);
+        params.put("car_from", llFrom);
+        params.put("car_to", llTo);
         params.put("car_hire_type", "Chiều về,Đi chung");
         params.put("order", 1);
         Log.e("TAG",params.toString());
@@ -127,13 +328,15 @@ public class ListPassengerBookingFragment extends Fragment {
                         adapter.setOnRequestComplete( new PassengerCarAdapter.onClickListener() {
                             @Override
                             public void onItemClick() {
-                                getBooking();
+                                getBooking(llFrom,llTo);
                             }
                         });
                         //swipeToRefresh.setRefreshing(false);
-
+                        vehicleView.setVisibility(View.VISIBLE);
+                        txtNoResult.setVisibility(View.GONE);
                     }else{
                         txtNoResult.setVisibility(View.VISIBLE);
+                        vehicleView.setVisibility(View.GONE);
                         txtNoResult.setText("Không có xe nào cho tuyến này");
                         //swipeToRefresh.setRefreshing(false);
                     }
@@ -202,7 +405,7 @@ public class ListPassengerBookingFragment extends Fragment {
         txtNoResult.setVisibility(View.VISIBLE);
         txtNoResult.setText(text);
     }
-    public interface CheckLocationListener{
+   public interface CheckLocationListener{
         public void onChecking();
     }
     @Override

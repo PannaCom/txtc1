@@ -52,7 +52,7 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.map_active_car_fragment, container, false);
+        View view = inflater.inflate(R.layout.map_passenger_booking_fragment, container, false);
         SupportMapFragment map = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         imgRefresh  =   (ImageView) view.findViewById(R.id.img_refresh);
         imgRefresh.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +63,21 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
             }
         });
         map.getMapAsync(this);
+        ((ListPassengerBookingActivity) getActivity()).updateMap(new ListPassengerBookingActivity.onMapRefresh() {
+            @Override
+            public void onLocationSuccess() {
+                getCarAround();
+            }
+
+            @Override
+            public void onLocationFailure() {
+
+            }
+
+            @Override
+            public void onOffline() {
+            }
+        });
         return view;
     }
 
@@ -77,7 +92,6 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
-        getCarAround();
     }
     private void getCarAround() {
         mLocation = new GPSTracker(getActivity());
@@ -148,8 +162,8 @@ public class MapPassengerBookingFragment extends Fragment implements OnMapReadyC
                 gap = df.format(distance*1000) + " m";
             else
                 gap = df.format(distance) + " km";
-            LatLng aroundLatLon = new LatLng(lon, lat);
-            Marker marker = mMap.addMarker(new MarkerOptions().position(curLatLng).title("Xe cách bạn "+gap));
+            LatLng aroundLatLon = new LatLng(lat, lon);
+            Marker marker = mMap.addMarker(new MarkerOptions().position(aroundLatLon).title("Xe cách bạn "+gap));
             marker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.car_icon));
             markerList.add(marker);
         } catch (JSONException e) {

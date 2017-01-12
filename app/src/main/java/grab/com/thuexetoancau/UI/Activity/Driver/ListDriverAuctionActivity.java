@@ -148,10 +148,6 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                                 Intent intentList = new Intent(mContext, ListDriverBookingActivity.class);
                                 startActivity(intentList);
                                 return true;
-                            case R.id.action_post_drive:
-                                Intent intentPost = new Intent(mContext, GetInforDriverBookingActivity.class);
-                                startActivity(intentPost);
-                                return true;
                             case R.id.action_list_auction:
                                 Intent intentAuction = new Intent(mContext, ListAuctionSuccessActivity.class);
                                 startActivity(intentAuction);
@@ -259,6 +255,10 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
     public void newDriverCar(View v) {
         Intent intentList = new Intent(mContext, NewCarAuctionsActivity.class);
         startActivity(intentList);
+    }
+    public void tradeCustomerCar(View v) {
+        Intent intentPost = new Intent(mContext, GetInforDriverBookingActivity.class);
+        startActivity(intentPost);
     }
     private void getCurrentAccount() {
         SharePreference preference = new SharePreference(this);

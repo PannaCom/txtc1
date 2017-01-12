@@ -14,9 +14,5 @@
         android:id="@+id/action_list_auction"
         android:title="Danh sách đấu giá thành công"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_post_drive"
-        android:title=" Đăng chuyến thừa khách"
-        app:showAsAction="never" />
 
 </menu>

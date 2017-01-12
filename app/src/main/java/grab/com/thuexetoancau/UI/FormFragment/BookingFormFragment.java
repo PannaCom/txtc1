@@ -194,7 +194,11 @@ public class BookingFormFragment extends Fragment {
 
         edtCarType.setOnClickListener(get_car_type_listener);
         edtHireType.setOnClickListener(get_hire_type_listener);
-        edtTargetHire.setOnClickListener(get_target_hire_listener);
+        if (preference.getRole() ==1){
+            edtTargetHire.setText("Nhà xe/Lái xe");
+            edtTargetHire.setOnClickListener(null);
+        }else
+            edtTargetHire.setOnClickListener(get_target_hire_listener);
         edtDateFrom.setOnClickListener(get_date_from_listener);
         edtDateTo.setOnClickListener(get_date_to_listener);
         btnConfirm.setOnClickListener(booking_ticket_listener);
@@ -698,6 +702,14 @@ public class BookingFormFragment extends Fragment {
         // Parsing the date
         DateTime fromDate = dtf.parseDateTime(edtDateFrom.getText().toString());
         DateTime toDate = dtf.parseDateTime(edtDateTo.getText().toString());
+        DateTime now = new DateTime();
+        long diffCurrent = fromDate.getMillis() - now.getMillis()- Defines.TIME_BEFORE_AUCTION_SHORT;;
+        if (diffCurrent <= 0){
+            txtWarn.setVisibility(View.VISIBLE);
+            txtWarn.setText("Thời gian đi phải sau thời gian hiện tại ít nhất 1 tiếng");
+            requestFocus(txtWarn);
+            return true;
+        }
 
         long diffInMillis = toDate.getMillis() - fromDate.getMillis() - Defines.TIME_BEFORE_AUCTION_SHORT;
         if (diffInMillis <= 0){
@@ -736,13 +748,20 @@ public class BookingFormFragment extends Fragment {
                 if (datePicker.getYear() == year && datePicker.getMonth() == month && datePicker.getDayOfMonth() == day ){
                     if (mHour <= hour) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            timePicker.setHour(hour+1);
+
+                            if (hour > 22)
+                                timePicker.setHour(hour);
+                            else
+                                timePicker.setHour(hour+1);
                             timePicker.setMinute(minutes);
                         }else {
-                            timePicker.setCurrentHour(hour+1);
+                            if (hour > 22)
+                                timePicker.setCurrentHour(hour);
+                            else
+                                timePicker.setCurrentHour(hour+1);
+
                             timePicker.setCurrentMinute(minutes);
                         }
-
                     }
                 }
             }
@@ -750,9 +769,15 @@ public class BookingFormFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 22){
+                timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+            }else
+                timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
         }else {
-            timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
+            if (calendar.get(Calendar.HOUR_OF_DAY) > 22)
+                timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+            else
+                timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY)+1);
         }
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
 
@@ -766,10 +791,17 @@ public class BookingFormFragment extends Fragment {
                 int minutes = now.get(Calendar.MINUTE);
                 if (cYear == year && cMonth == month && cDay == dayOfMonth ) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        timePicker.setHour(hour+1);
+                        if (hour > 22)
+                            timePicker.setHour(hour);
+                        else
+                            timePicker.setHour(hour+1);
                         timePicker.setMinute(minutes);
                     }else {
-                        timePicker.setCurrentHour(hour+1);
+                        if (hour > 22)
+                            timePicker.setCurrentHour(hour);
+                        else
+                            timePicker.setCurrentHour(hour+1);
+
                         timePicker.setCurrentMinute(minutes);
                     }
                 }
