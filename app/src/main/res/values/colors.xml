@@ -30,4 +30,5 @@
     <color name="color_text_dark">#00612e</color>
     <color name="orange">#f9a02b</color>
     <color name="orange1">#ffddb1</color>
+    <color name="md_grey_800">#424242</color>
 </resources>

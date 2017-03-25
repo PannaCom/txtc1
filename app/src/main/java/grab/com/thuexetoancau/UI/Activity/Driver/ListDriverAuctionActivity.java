@@ -152,6 +152,10 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                                 Intent intentAuction = new Intent(mContext, ListAuctionSuccessActivity.class);
                                 startActivity(intentAuction);
                                 return true;
+                            case R.id.action_statistic:
+                                Intent intentStatistic = new Intent(mContext, StatisticActivity.class);
+                                startActivity(intentStatistic);
+                                return true;
                         }
                         return false;
                     }

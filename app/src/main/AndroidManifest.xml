@@ -54,8 +54,9 @@
         <activity android:name=".UI.Activity.Driver.ListPassengerBookingEachDriver" />
         <activity android:name=".UI.Activity.Driver.ListDriverBookingActivity" />
         <activity android:name=".UI.Activity.Driver.GetInforDriverBookingActivity" />
-        <activity android:name=".UI.Activity.Driver.EditDriverActivity"></activity>
-        <activity android:name=".UI.Activity.Driver.ListAuctionSuccessActivity"></activity>
+        <activity android:name=".UI.Activity.Driver.EditDriverActivity" />
+        <activity android:name=".UI.Activity.Driver.ListAuctionSuccessActivity" />
+        <activity android:name=".UI.Activity.Driver.StatisticActivity"></activity>
     </application>
 
 </manifest>

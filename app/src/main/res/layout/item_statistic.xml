@@ -1,0 +1,46 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    android:weightSum="8.5">
+
+    <TextView
+        android:id="@+id/txt_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Số thứ tự"
+
+        android:textColor="@color/md_grey_800" />
+
+    <TextView
+        android:id="@+id/txt_deal_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.5"
+        android:text="Loại giao dịch"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/md_grey_800" />
+
+    <TextView
+        android:id="@+id/txt_deal_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Ngày giao dịch"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/md_grey_800" />
+
+    <TextView
+        android:id="@+id/txt_deal_cost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:layout_marginLeft="5dp"
+        android:text="Số tiền"
+        android:textColor="@color/md_grey_800" />
+</LinearLayout>

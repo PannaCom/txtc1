@@ -1,0 +1,36 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    android:weightSum="5"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/txt_car_register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.25"
+        android:text="Biển số xe"
+        android:textColor="@color/md_grey_800" />
+
+    <TextView
+        android:id="@+id/txt_deal_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.75"
+        android:text="Tổng giá trị giao dịch"
+        android:textColor="@color/md_grey_800" />
+
+    <TextView
+        android:id="@+id/txt_deal_sum"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="2"
+        android:text="Tổng số giao dịch"
+        android:textColor="@color/md_grey_800" />
+
+</LinearLayout>

@@ -14,5 +14,8 @@
         android:id="@+id/action_list_auction"
         android:title="Danh sách đấu giá thành công"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/action_statistic"
+        android:title="Xem sao kê Grab"
+        app:showAsAction="never" />
 </menu>
