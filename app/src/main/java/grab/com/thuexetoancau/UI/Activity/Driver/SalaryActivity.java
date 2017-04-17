@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,36 +28,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import grab.com.thuexetoancau.Controller.StatisticAdapter;
-import grab.com.thuexetoancau.Controller.StatisticNoDetailAdapter;
-import grab.com.thuexetoancau.Model.Statistic;
-import grab.com.thuexetoancau.Model.StatisticNoDetail;
+import grab.com.thuexetoancau.Controller.SalaryAdapter;
+import grab.com.thuexetoancau.Model.Salary;
 import grab.com.thuexetoancau.R;
 import grab.com.thuexetoancau.Utilities.BaseService;
 import grab.com.thuexetoancau.Utilities.Defines;
 import grab.com.thuexetoancau.Utilities.SimpleDividerItemDecoration;
 
-public class StatisticActivity extends AppCompatActivity {
+public class SalaryActivity extends AppCompatActivity {
     private AutoCompleteTextView edtCarRegister;
     private Context mContext;
-    private TextView txtDateFrom, txtDateTo, txtNoStatistic;
-    private RecyclerView listStatistic;
+    private TextView txtDateFrom, txtDateTo, txtNoInfo;
+    private RecyclerView listSalary;
     private Button btnSearch;
-    private CheckBox isDetail;
-    private ArrayList<Statistic> arrayStatistic;
-    private ArrayList<StatisticNoDetail> arrayStatisticNoDetail;
-    private LinearLayout headerStatistic, layoutOverall;
+    private ArrayList<Salary> arraySalary;
+    private LinearLayout headerSalary;
     private ImageView imgBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_statistic);
+        setContentView(R.layout.activity_salary);
         mContext = this;
         initComponents();
     }
@@ -66,20 +61,17 @@ public class StatisticActivity extends AppCompatActivity {
     private void initComponents() {
         txtDateFrom = (TextView) findViewById(R.id.btn_date_from);
         txtDateTo = (TextView) findViewById(R.id.btn_date_to);
-        listStatistic = (RecyclerView) findViewById(R.id.list_statistic);
+        listSalary = (RecyclerView) findViewById(R.id.list_salaries);
         edtCarRegister = (AutoCompleteTextView) findViewById(R.id.car_name);
-        isDetail = (CheckBox) findViewById(R.id.check_detail);
         btnSearch = (Button) findViewById(R.id.btn_search);
-        headerStatistic = (LinearLayout) findViewById(R.id.header_statistic);
-        txtNoStatistic = (TextView) findViewById(R.id.txt_no_statistic);
-        listStatistic = (RecyclerView) findViewById(R.id.list_statistic);
-        imgBack = (ImageView)           findViewById(R.id.btn_back);
-        layoutOverall = (LinearLayout) findViewById(R.id.result_no_detail);
+        headerSalary = (LinearLayout) findViewById(R.id.header_salary);
+        txtNoInfo = (TextView) findViewById(R.id.txt_no_info);
+        imgBack = (ImageView) findViewById(R.id.btn_back);
 
-        listStatistic.setHasFixedSize(true);
+        listSalary.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(mContext);
-        listStatistic.setLayoutManager(llm);
-        listStatistic.addItemDecoration(new SimpleDividerItemDecoration(this));
+        listSalary.setLayoutManager(llm);
+        listSalary.addItemDecoration(new SimpleDividerItemDecoration(this));
 
 
         edtCarRegister.addTextChangedListener(new TextWatcher() {
@@ -132,8 +124,8 @@ public class StatisticActivity extends AppCompatActivity {
         final ArrayList<String> arrayCar = new ArrayList<>();
         RequestParams params;
         params = new RequestParams();
-        params.put("keyword",s);
-        Log.e("TAG",params.toString());
+        params.put("keyword", s);
+        Log.e("TAG", params.toString());
         BaseService.getHttpClient().get(Defines.URL_CAR_REGISTATION, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
@@ -148,7 +140,7 @@ public class StatisticActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_1,arrayCar);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, arrayCar);
                 edtCarRegister.setAdapter(adapter);
                 edtCarRegister.setThreshold(1);
             }
@@ -167,63 +159,49 @@ public class StatisticActivity extends AppCompatActivity {
     }
 
     private void letsSearch() {
-        if (isDetail.isChecked()) {
-            if (edtCarRegister.getText().toString().equals("")) {
-                Toast.makeText(mContext, "Bạn chưa nhập biển số xe", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (edtCarRegister.getText().toString().equals("")) {
+            Toast.makeText(mContext, "Bạn chưa nhập biển số xe", Toast.LENGTH_SHORT).show();
+            return;
         }
         RequestParams params;
         params = new RequestParams();
         params.put("carNumber", edtCarRegister.getText().toString());
-        params.put("fDate",txtDateFrom.getText().toString());
-        params.put("tDate",txtDateTo.getText().toString());
-        params.put("isDetail",isDetail.isChecked());
-        Log.e("TAG",params.toString());
+        params.put("fDate", txtDateFrom.getText().toString());
+        params.put("tDate", txtDateTo.getText().toString());
+        Log.e("TAG", params.toString());
         final ProgressDialog dialog = new ProgressDialog(mContext);
         dialog.setMessage("Đang tải dữ liệu");
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.show();
-        BaseService.getHttpClient().get(Defines.URL_STATISTIC, params, new AsyncHttpResponseHandler() {
+        BaseService.getHttpClient().get(Defines.URL_SALARY, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 // called when response HTTP status is "200 OK"
                 Log.i("JSON", new String(responseBody));
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edtCarRegister.getWindowToken(), 0);
-                if(isDetail.isChecked()) {
-                    headerStatistic.setVisibility(View.VISIBLE);
-                    layoutOverall.setVisibility(View.GONE);
-                    arrayStatistic = new ArrayList<>();
-                    try {
-                        JSONArray arrayresult = new JSONArray(new String(responseBody));
-                        for (int i = 0; i < arrayresult.length(); i++) {
-                            JSONObject jsonobject = arrayresult.getJSONObject(i);
-                            parseJsonResult(jsonobject);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                headerSalary.setVisibility(View.VISIBLE);
+                arraySalary = new ArrayList<>();
+                try {
+                    JSONArray arrayresult = new JSONArray(new String(responseBody));
+                    for (int i = 0; i < arrayresult.length(); i++) {
+                        JSONObject jsonobject = arrayresult.getJSONObject(i);
+                        parseJsonResult(jsonobject);
                     }
-                    if (arrayStatistic.size() > 0) {
-                        headerStatistic.setVisibility(View.VISIBLE);
-                        txtNoStatistic.setVisibility(View.GONE);
-                        listStatistic.setVisibility(View.VISIBLE);
-                        StatisticAdapter adapter = new StatisticAdapter(mContext, arrayStatistic);
-                        listStatistic.setAdapter(adapter);
-                    } else {
-                        headerStatistic.setVisibility(View.GONE);
-                        txtNoStatistic.setVisibility(View.VISIBLE);
-                        listStatistic.setVisibility(View.GONE);
-                    }
-
-                }else{
-                    arrayStatisticNoDetail = new ArrayList<>();
-                    headerStatistic.setVisibility(View.GONE);
-                    layoutOverall.setVisibility(View.VISIBLE);
-                    showResultOverall(responseBody);
-                    StatisticNoDetailAdapter adapter = new StatisticNoDetailAdapter(mContext, arrayStatisticNoDetail);
-                    listStatistic.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (arraySalary.size() > 0) {
+                    headerSalary.setVisibility(View.VISIBLE);
+                    txtNoInfo.setVisibility(View.GONE);
+                    listSalary.setVisibility(View.VISIBLE);
+                    SalaryAdapter adapter = new SalaryAdapter(mContext, arraySalary);
+                    listSalary.setAdapter(adapter);
+                } else {
+                    headerSalary.setVisibility(View.GONE);
+                    txtNoInfo.setVisibility(View.VISIBLE);
+                    listSalary.setVisibility(View.GONE);
                 }
                 dialog.dismiss();
             }
@@ -242,33 +220,20 @@ public class StatisticActivity extends AppCompatActivity {
         });
     }
 
-    private void showResultOverall(byte[] responseBody) {
-        try {
-            JSONArray arrayresult = new JSONArray(new String(responseBody));
-            for (int i = 0; i < arrayresult.length(); i++) {
-                JSONObject jsonobject = arrayresult.getJSONObject(i);
-                int count         = jsonobject.getInt("count");
-                Double sum        = jsonobject.getDouble("sum");
-                String car = jsonobject.getString("carNum");
-                StatisticNoDetail sta = new StatisticNoDetail(car, sum,count);
-                arrayStatisticNoDetail.add(sta);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void parseJsonResult(JSONObject jsonobject) {
         try {
-            int id              = jsonobject.getInt("id");
-            String type         = jsonobject.getString("type");
-            String date        = jsonobject.getString("date");
-            int money           = jsonobject.getInt("money");
-            String note         = jsonobject.getString("note");
+            int id = jsonobject.getInt("id");
+            String carNumber = jsonobject.getString("car_number");
+            String driverName = jsonobject.getString("driver_name");
+            int money = jsonobject.getInt("money");
+            String bankNumber = jsonobject.getString("bank_number");
+            String bankName = jsonobject.getString("bank_name");
+            String fromDate = jsonobject.getString("from_date");
+            String toDate = jsonobject.getString("to_date");
 
 
-            Statistic sta = new Statistic(id,type,date,money,note);
-            arrayStatistic.add(sta);
+            Salary sta = new Salary(id, carNumber, driverName, money, bankNumber, bankName, fromDate, toDate);
+            arraySalary.add(sta);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -286,7 +251,7 @@ public class StatisticActivity extends AppCompatActivity {
                 txtDate.setText(dateFormatter.format(newDate.getTime()));
             }
 
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
 
         fromDatePickerDialog.show();

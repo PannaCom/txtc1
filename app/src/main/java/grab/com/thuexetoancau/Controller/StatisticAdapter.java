@@ -58,7 +58,7 @@ public class StatisticAdapter extends RecyclerView.Adapter<StatisticAdapter.View
         DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
         holder.date.setText(dtf.print(date));
 
-        holder.money.setText(arrayStatistic.get(position).getMoney()+"");
+        holder.money.setText(Utilities.convertCurrency(arrayStatistic.get(position).getMoney()));
     }
     @Override
     public int getItemCount() {

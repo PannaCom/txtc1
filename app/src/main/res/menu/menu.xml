@@ -18,4 +18,12 @@
         android:id="@+id/action_statistic"
         android:title="Xem sao kê Grab"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_salary"
+        android:title="Bảng lương tài xế"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_owe"
+        android:title="Bảng công nợ tài xế"
+        app:showAsAction="never" />
 </menu>

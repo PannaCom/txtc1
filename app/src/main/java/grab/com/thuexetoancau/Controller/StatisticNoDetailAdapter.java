@@ -18,6 +18,7 @@ import java.util.List;
 import grab.com.thuexetoancau.Model.Statistic;
 import grab.com.thuexetoancau.Model.StatisticNoDetail;
 import grab.com.thuexetoancau.R;
+import grab.com.thuexetoancau.Utilities.Utilities;
 
 /**
  * Created by DatNT on 11/17/2016.
@@ -41,7 +42,7 @@ public class StatisticNoDetailAdapter extends RecyclerView.Adapter<StatisticNoDe
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.carNum.setText(arrayStatistic.get(position).getCarNumber());
         DecimalFormat df = new DecimalFormat("#.##############");
-        holder.sum.setText(df.format(arrayStatistic.get(position).getSum())+"");
+        holder.sum.setText(Utilities.convertCurrency(Integer.valueOf(df.format(arrayStatistic.get(position).getSum()))));
         holder.count.setText(arrayStatistic.get(position).getCount()+"");
     }
     @Override

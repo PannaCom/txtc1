@@ -36,6 +36,8 @@ public class Defines {
     public static  final String     URL_BOOKING_SUCCESS         = HOSTNAME + "api/getBookingSuccess";
     public static  final String     URL_CAR_REGISTATION         = HOSTNAME + "api/searchCarNumber";
     public static  final String     URL_STATISTIC               = HOSTNAME + "api/searchTran";
+    public static  final String     URL_SALARY                  = HOSTNAME + "api/searchTranSalary";
+    public static  final String     URL_OWE                     = HOSTNAME + "api/searchTranOwn";
 
     public static  final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 123;
     public static  final int REQUEST_CODE_LOCATION_PERMISSIONS = 234;

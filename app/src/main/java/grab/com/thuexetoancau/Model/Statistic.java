@@ -7,14 +7,14 @@ package grab.com.thuexetoancau.Model;
 public class Statistic {
     private int id;
     private String type;
-    private long date;
+    private String  date;
     private int money;
     private String note;
 
     public Statistic() {
     }
 
-    public Statistic(int id, String type, long date, int money, String note) {
+    public Statistic(int id, String type, String date, int money, String note) {
         this.id = id;
         this.type = type;
         this.date = date;
@@ -38,11 +38,11 @@ public class Statistic {
         this.type = type;
     }
 
-    public long getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(long date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
