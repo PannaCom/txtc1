@@ -440,7 +440,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
         });
     }
     private void removeAuctionExpire() {
-        ArrayList<BookingObject> temp = new ArrayList<>();
+     /*   ArrayList<BookingObject> temp = new ArrayList<>();
         for (BookingObject bookin : vehicles)
             temp.add(bookin);
         for (BookingObject bookin : temp){
@@ -459,7 +459,7 @@ public class ListDriverAuctionActivity extends AppCompatActivity {
                     break;
                 }
             }
-        }
+        }*/
         adapter = new BookingCarAdapter(mContext, vehicles,money);
         vehicleView.setAdapter(adapter);
         adapter.setOnRequestComplete(new BookingCarAdapter.onClickListener() {

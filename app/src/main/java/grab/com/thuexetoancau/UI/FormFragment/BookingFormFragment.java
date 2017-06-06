@@ -702,14 +702,6 @@ public class BookingFormFragment extends Fragment {
         // Parsing the date
         DateTime fromDate = dtf.parseDateTime(edtDateFrom.getText().toString());
         DateTime toDate = dtf.parseDateTime(edtDateTo.getText().toString());
-        DateTime now = new DateTime();
-        long diffCurrent = fromDate.getMillis() - now.getMillis()- Defines.TIME_BEFORE_AUCTION_SHORT;;
-        if (diffCurrent <= 0){
-            txtWarn.setVisibility(View.VISIBLE);
-            txtWarn.setText("Thời gian đi phải sau thời gian hiện tại ít nhất 1 tiếng");
-            requestFocus(txtWarn);
-            return true;
-        }
 
         long diffInMillis = toDate.getMillis() - fromDate.getMillis() - Defines.TIME_BEFORE_AUCTION_SHORT;
         if (diffInMillis <= 0){

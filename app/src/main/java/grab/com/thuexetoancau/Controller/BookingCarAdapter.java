@@ -158,6 +158,7 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
 
             public void onFinish() {
                 whoWinDriver(position);
+                holder.txtTimeReduce.setText("Hết hạn");
             }
 
         };
@@ -331,6 +332,8 @@ public class BookingCarAdapter extends RecyclerView.Adapter<BookingCarAdapter.Vi
                 if (onSuccess != null)
                     onSuccess.onSuccess();
                 String result = new String(responseBody);
+                if (result.equals("-1")||result.equals("-2"))
+                    return;
                 final String phone = result.split("_")[0];
                 int idBooking = Integer.parseInt(result.split("_")[1]);
                 int totalMoney = Integer.parseInt(result.split("_")[2]);
